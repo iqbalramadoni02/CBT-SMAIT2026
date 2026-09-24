@@ -130,7 +130,7 @@ textarea{resize:vertical}
 .bs-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .bs-table th,.bs-table td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 .bs-table th{background:var(--hijau-t);font-size:.85em}
-.bs-table td.c{text-align:center;width:84px}
+.bs-table td.c,.bs-table th.c{text-align:center;width:84px}
 .bs-table input{width:20px;height:20px;accent-color:var(--hijau)}
 .match-row{display:grid;grid-template-columns:28px 1fr 130px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
 .box{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;margin-bottom:14px}
@@ -146,6 +146,20 @@ textarea.ans-in{min-height:280px;line-height:1.6;font-family:var(--serif)}
 .rec .dot{width:12px;height:12px;border-radius:50%;background:var(--merah);animation:pulse 1s infinite}
 @keyframes pulse{50%{opacity:.25}}
 @media (prefers-reduced-motion:reduce){.rec .dot{animation:none}}
+
+/* isian rumpang, pengelompokan, sisip kalimat, tabel dalam soal */
+.tbl-q{overflow-x:auto;margin:10px 0}
+.bs-table.md td,.bs-table.md th{border:1px solid var(--line)}
+.blank-w{display:inline-flex;align-items:center;gap:4px;margin:2px 3px;vertical-align:middle}
+.blank-w b{font-size:.72em;background:var(--ink);color:#fff;border-radius:4px;padding:1px 5px;font-variant-numeric:tabular-nums}
+.blank{width:9em;max-width:60vw;padding:4px 8px;border:0;border-bottom:2px solid var(--hijau);background:var(--hijau-t);border-radius:4px 4px 0 0;font:inherit;font-size:.95em}
+.blank:focus{outline:none;background:#fff;box-shadow:0 0 0 2px var(--emas)}
+.blank.over{border-bottom-color:var(--merah);background:var(--merah-t)}
+button.ins{border:1.5px dashed var(--hijau);background:#fff;color:var(--hijau);border-radius:5px;padding:0 6px;font:inherit;font-size:.85em;font-weight:700;cursor:pointer;margin:0 2px}
+button.ins:hover{background:var(--hijau-t)}
+button.ins.on{border-style:solid;background:var(--emas-t);color:var(--ink);font-weight:500;text-align:left;font-size:1em}
+.ins-txt{font-family:var(--serif)}
+textarea.ans-in.short{min-height:130px}
 
 /* lembar jawaban (LJK) */
 .ljk{border-left:1px solid var(--line);background:#fff;padding:16px;display:flex;flex-direction:column;gap:12px;overflow:auto}
@@ -321,6 +335,19 @@ pre.code{background:#F2F5F3;border-radius:8px;padding:12px;font-size:12.5px;over
         <label class="fld"><span>Username</span><input id="in-user" autocomplete="username" required></label>
         <label class="fld"><span>Password</span><input id="in-pass" type="password" autocomplete="current-password" required></label>
         <button id="btn-staf" class="btn dark wide" type="submit">Masuk dasbor</button>
+        <p class="hint" id="reg-link" hidden>Guru baru? <a href="#" id="to-daftar">Daftar sebagai guru</a></p>
+      </form>
+
+      <form id="f-daftar" class="tabp" autocomplete="off" onsubmit="return false">
+        <p class="hint" style="margin:0 0 12px">Pendaftaran khusus guru. Minta <b>kode registrasi</b> kepada admin sekolah.</p>
+        <label class="fld"><span>Nama lengkap &amp; gelar *</span><input id="rg-nama" maxlength="80"></label>
+        <label class="fld"><span>Mata pelajaran</span><input id="rg-mapel" maxlength="60" placeholder="mis. Bahasa Inggris"></label>
+        <label class="fld"><span>Username *</span><input id="rg-user" maxlength="30" placeholder="huruf kecil tanpa spasi" autocapitalize="off"></label>
+        <label class="fld"><span>Password * (min. 8 karakter)</span><input id="rg-pass" type="password" autocomplete="new-password"></label>
+        <label class="fld"><span>Ulangi password *</span><input id="rg-pass2" type="password" autocomplete="new-password"></label>
+        <label class="fld"><span>Kode registrasi guru *</span><input id="rg-kode" class="upper" maxlength="12"></label>
+        <button id="btn-daftar" class="btn pri wide" type="submit">Daftar &amp; masuk</button>
+        <p class="hint"><a href="#" id="to-login">Sudah punya akun? Masuk</a></p>
       </form>
     </div>
   </div>
@@ -420,8 +447,8 @@ pre.code{background:#F2F5F3;border-radius:8px;padding:12px;font-size:12.5px;over
       <a data-v="beranda">Beranda</a>
       <a data-v="ujian" data-role="Admin,Guru">Ujian &amp; bank soal</a>
       <a data-v="awas">Pengawasan langsung <em id="s-badge" hidden></em></a>
-      <a data-v="nilai">Penilaian</a>
-      <a data-v="rekap">Rekap &amp; analisis</a>
+      <a data-v="nilai" data-role="Admin,Guru">Penilaian</a>
+      <a data-v="rekap" data-role="Admin,Guru">Rekap &amp; analisis</a>
       <a data-v="siswa" data-role="Admin,Guru">Data siswa</a>
       <a data-v="pengguna" data-role="Admin">Akun guru &amp; admin</a>
       <a data-v="audit" data-role="Admin">Log aktivitas</a>
@@ -626,8 +653,29 @@ function rich(t) {
   s = s.replace(/\[\[AUDIO:([^\]]+)\]\]/g, (m, u) => mediaTag(u.replace(/&amp;/g, '&'), 'audio'));
   s = s.replace(/\*\*([\s\S]+?)\*\*/g, '<b>$1</b>');
   s = s.replace(/\[u\]([\s\S]+?)\[\/u\]/g, '<u>$1</u>');
-  s = s.replace(/\n/g, '<br>');
-  return s;
+  return mdTables(s);
+}
+
+/** Tabel sederhana: baris yang diawali dan diakhiri "|" (baris ke-2 boleh |---|---| sebagai pemisah judul) */
+function mdTables(s) {
+  const lines = s.split('\n');
+  const out = [];
+  let i = 0;
+  const isRow = l => /^\s*\|.*\|\s*$/.test(l);
+  const isSep = l => /^\s*\|[\s:\-|]+\|\s*$/.test(l) && l.indexOf('-') >= 0;
+  const cells = l => l.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+  while (i < lines.length) {
+    if (isRow(lines[i])) {
+      const rows = [];
+      while (i < lines.length && isRow(lines[i])) rows.push(lines[i++]);
+      let head = null;
+      if (rows.length > 1 && isSep(rows[1])) { head = cells(rows[0]); rows.splice(0, 2); }
+      const body = rows.filter(r => !isSep(r));
+      out.push('<div class="tbl-q"><table class="bs-table md">' + (head ? '<thead><tr>' + head.map(c => '<th>' + c + '</th>').join('') + '</tr></thead>' : '') +
+        '<tbody>' + body.map(r => '<tr>' + cells(r).map(c => '<td>' + c + '</td>').join('') + '</tr>').join('') + '</tbody></table></div>');
+    } else out.push(lines[i++] + (i < lines.length && !isRow(lines[i]) ? '<br>' : ''));
+  }
+  return out.join('');
 }
 
 function renderMath(el) {
@@ -696,6 +744,7 @@ $$('.seg-b').forEach(b => b.addEventListener('click', () => {
   $$('.seg-b').forEach(x => x.classList.toggle('on', x === b));
   $('#f-siswa').classList.toggle('on', b.dataset.tab === 'siswa');
   $('#f-staf').classList.toggle('on', b.dataset.tab === 'staf');
+  const fd = $('#f-daftar'); if (fd) fd.classList.remove('on');
 }));
 </script>
 <script>
@@ -703,8 +752,26 @@ $$('.seg-b').forEach(b => b.addEventListener('click', () => {
 const TIPE_LABEL = {
   PG: 'Pilihan ganda', PG_KOMPLEKS: 'Pilihan ganda kompleks', BENAR_SALAH: 'Benar/salah per pernyataan', TF: 'Benar/salah',
   TFNG: 'True / False / Not Given', YNNG: 'Yes / No / Not Given', ISIAN: 'Isian singkat', ESAI: 'Uraian',
-  MENJODOHKAN: 'Menjodohkan', URUTAN: 'Mengurutkan', SEBAB_AKIBAT: 'Sebab-akibat', ANALISIS: 'Analisis pernyataan', SPEAKING: 'Speaking'
+  MENJODOHKAN: 'Menjodohkan', URUTAN: 'Mengurutkan', SEBAB_AKIBAT: 'Sebab-akibat', ANALISIS: 'Analisis pernyataan', SPEAKING: 'Speaking',
+  ISIAN_RUMPANG: 'Isian rumpang (banyak isian)', KATEGORI: 'Tabel pengelompokan', SISIP_KALIMAT: 'Sisipkan kalimat'
 };
+/** Varian tampilan (tipe dasar di kurung) — dipakai di form guru & label soal */
+const VARIAN_LABEL = {
+  LABEL_GAMBAR: 'Labelling peta/denah/diagram', MATCHING_HEADINGS: 'Matching headings', MATCHING_INFORMATION: 'Matching information',
+  MATCHING_FEATURES: 'Matching features', MATCHING_SENTENCE_ENDINGS: 'Matching sentence endings',
+  FORM_COMPLETION: 'Form completion', NOTE_COMPLETION: 'Note completion', TABLE_COMPLETION: 'Table completion',
+  FLOWCHART_COMPLETION: 'Flow-chart completion', SUMMARY_COMPLETION: 'Summary completion', SENTENCE_COMPLETION: 'Sentence completion',
+  SHORT_ANSWER: 'Short-answer question', SPR: 'Isian angka (SPR)', RINGKASAN: 'Ringkasan (pilih beberapa)',
+  URAIAN_SINGKAT: 'Uraian singkat', ACADEMIC_DISCUSSION: 'Academic discussion', INTEGRATED_WRITING: 'Integrated writing',
+  INTERVIEW: 'Speaking interview', CUE_CARD: 'Speaking cue card'
+};
+const VARIAN_BASE = {
+  LABEL_GAMBAR: 'MENJODOHKAN', MATCHING_HEADINGS: 'MENJODOHKAN', MATCHING_INFORMATION: 'MENJODOHKAN', MATCHING_FEATURES: 'MENJODOHKAN', MATCHING_SENTENCE_ENDINGS: 'MENJODOHKAN',
+  FORM_COMPLETION: 'ISIAN_RUMPANG', NOTE_COMPLETION: 'ISIAN_RUMPANG', TABLE_COMPLETION: 'ISIAN_RUMPANG', FLOWCHART_COMPLETION: 'ISIAN_RUMPANG',
+  SUMMARY_COMPLETION: 'ISIAN_RUMPANG', SENTENCE_COMPLETION: 'ISIAN_RUMPANG', SHORT_ANSWER: 'ISIAN', SPR: 'ISIAN', RINGKASAN: 'PG_KOMPLEKS',
+  URAIAN_SINGKAT: 'ESAI', ACADEMIC_DISCUSSION: 'ESAI', INTEGRATED_WRITING: 'ESAI', INTERVIEW: 'SPEAKING', CUE_CARD: 'SPEAKING'
+};
+const tipeName = q => (q.set && VARIAN_LABEL[q.set.varian]) || TIPE_LABEL[q.tipe] || q.tipe;
 const FIXED_TEXT = {
   SEBAB_AKIBAT: ['Pernyataan benar, alasan benar, dan keduanya menunjukkan hubungan sebab-akibat',
     'Pernyataan benar, alasan benar, tetapi keduanya tidak menunjukkan hubungan sebab-akibat',
@@ -911,7 +978,7 @@ function renderQ() {
   const pane = $('#x-pane');
   const qMedia = q.media && !isAudio(q.media) ? `<div class="qmedia">${mediaTag(q.media)}</div>` : '';
   const body = `<div class="qbody">
-      <div class="qhead"><span class="qno">${S.idx + 1}</span><span class="qmeta">${esc(q.section)} / ${esc(TIPE_LABEL[q.tipe] || q.tipe)}${q.bobot !== 1 ? ' / bobot ' + q.bobot : ''}</span></div>
+      <div class="qhead"><span class="qno">${S.idx + 1}</span><span class="qmeta">${esc(q.section)} / ${esc(tipeName(q))}${q.bobot !== 1 ? ' / bobot ' + q.bobot : ''}</span></div>
       ${qMedia}<div class="qtext">${rich(q.teks)}</div><div id="q-ans"></div></div>`;
   const showStim = st && (String(st.teks).trim() || (st.media && !isAudio(st.media)));
   pane.innerHTML = showStim
@@ -1036,7 +1103,7 @@ function renderAnswer(q, box) {
     }
     case 'ESAI': {
       const min = (q.set && q.set.min_kata) || 0;
-      box.innerHTML = `<textarea class="ans-in" id="es-in" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="Tulis jawaban Anda di sini"></textarea><div class="wc" id="es-wc"></div>`;
+      box.innerHTML = `<textarea class="ans-in${q.set && q.set.singkat ? ' short' : ''}" id="es-in" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="Tulis jawaban Anda di sini"></textarea><div class="wc" id="es-wc"></div>`;
       const ta = $('#es-in', box), wc = $('#es-wc', box);
       ta.value = a || '';
       const count = () => {
@@ -1048,6 +1115,60 @@ function renderAnswer(q, box) {
       let t;
       ta.addEventListener('input', () => { count(); clearTimeout(t); t = setTimeout(() => setAns(q.id, ta.value), 600); });
       ta.addEventListener('blur', () => setAns(q.id, ta.value));
+      break;
+    }
+    case 'ISIAN_RUMPANG': {
+      const cur = (a && typeof a === 'object') ? Object.assign({}, a) : {};
+      const mk = (q.set && q.set.maks_kata) || 0;
+      const qt = box.parentElement.querySelector('.qtext');
+      qt.innerHTML = qt.innerHTML.replace(/\[\[(\d{1,3})\]\]/g, (m, n) =>
+        `<span class="blank-w"><b>${n}</b><input class="blank" data-b="${n}" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" aria-label="Isian nomor ${n}" maxlength="80"></span>`);
+      box.innerHTML = `<p class="pill-hint">${mk ? 'Tulis TIDAK LEBIH DARI ' + mk + ' KATA dan/atau angka untuk setiap isian.' : 'Isi setiap kotak kosong pada teks.'}</p><div id="rp-warn" class="errs" hidden></div>`;
+      const inputs = $$('input.blank', qt);
+      let t;
+      const check = () => {
+        if (!mk) return;
+        const over = inputs.filter(x => (x.value.trim().match(/\S+/g) || []).length > mk).map(x => x.dataset.b);
+        inputs.forEach(x => x.classList.toggle('over', over.includes(x.dataset.b)));
+        $('#rp-warn', box).hidden = !over.length;
+        $('#rp-warn', box).textContent = over.length ? 'Isian nomor ' + over.join(', ') + ' melebihi ' + mk + ' kata.' : '';
+      };
+      inputs.forEach(inp => {
+        inp.value = cur[inp.dataset.b] || '';
+        const push = () => { cur[inp.dataset.b] = inp.value.trim(); check(); setAns(q.id, Object.assign({}, cur)); };
+        inp.addEventListener('input', () => { clearTimeout(t); t = setTimeout(push, 350); });
+        inp.addEventListener('blur', push);
+        inp.addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); const nx = inputs[inputs.indexOf(inp) + 1]; if (nx) nx.focus(); } });
+      });
+      check();
+      break;
+    }
+    case 'KATEGORI': {
+      const items = o.item || [], kat = o.kategori || {};
+      const L = Object.keys(kat);
+      const cur = (a && typeof a === 'object') ? Object.assign({}, a) : {};
+      box.innerHTML = `<div class="box">${L.map(k => `<b>${k}</b> = ${rich(kat[k])}`).join('<br>')}</div>
+        <div class="tbl-q"><table class="bs-table"><thead><tr><th>Pernyataan / item</th>${L.map(k => `<th class="c">${k}</th>`).join('')}</tr></thead><tbody>${items.map((it, i) =>
+        `<tr><td>${i + 1}. ${rich(it)}</td>${L.map(k => `<td class="c"><input type="radio" name="kt${i}" value="${k}" ${cur[i] === k ? 'checked' : ''} aria-label="${esc(k)}"></td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+      $$('input', box).forEach(inp => inp.addEventListener('change', () => {
+        cur[Number(inp.name.slice(2))] = inp.value;
+        setAns(q.id, Object.assign({}, cur));
+      }));
+      break;
+    }
+    case 'SISIP_KALIMAT': {
+      const qt = box.parentElement.querySelector('.qtext');
+      let k = 0;
+      qt.innerHTML = qt.innerHTML.replace(/\[■\]/g, () => { const l = LETTERS[k++]; return `<button type="button" class="ins" data-l="${l}" aria-label="Sisipkan di posisi ${l}">■ ${l}</button>`; });
+      box.innerHTML = `<div class="box"><span class="pill-hint">Kalimat yang disisipkan</span><div>${rich(o.kalimat)}</div></div>
+        <p class="muted small">Klik tanda ■ pada teks tempat kalimat paling tepat disisipkan.</p>`;
+      const paint = () => $$('button.ins', qt).forEach(b => {
+        const on = S.ans[q.id] === b.dataset.l;
+        b.classList.toggle('on', on);
+        b.innerHTML = on ? `<span class="ins-txt">${rich(o.kalimat)}</span>` : '■ ' + b.dataset.l;
+      });
+      $$('button.ins', qt).forEach(b => b.addEventListener('click', () => { setAns(q.id, b.dataset.l); paint(); }));
+      paint();
       break;
     }
     case 'SPEAKING':
@@ -1496,6 +1617,35 @@ $('#btn-staf').addEventListener('click', async () => {
 });
 $('#s-logout').addEventListener('click', () => staffOut(false));
 
+/* ---------------- registrasi guru ---------------- */
+function showRegForm(on) {
+  $('#f-staf').classList.toggle('on', !on);
+  $('#f-daftar').classList.toggle('on', !!on);
+}
+$('#to-daftar').addEventListener('click', ev => { ev.preventDefault(); showRegForm(true); });
+$('#to-login').addEventListener('click', ev => { ev.preventDefault(); showRegForm(false); });
+$('#btn-daftar').addEventListener('click', async () => {
+  const o = {
+    nama_lengkap: $('#rg-nama').value.trim(), username: $('#rg-user').value.trim().toLowerCase(), mapel: $('#rg-mapel').value.trim(),
+    password: $('#rg-pass').value, kode: $('#rg-kode').value.trim().toUpperCase()
+  };
+  if (!o.nama_lengkap || !o.username || !o.password || !o.kode) return toast('Lengkapi semua isian bertanda wajib.', 'err');
+  if (o.password !== $('#rg-pass2').value) return toast('Ulangan password tidak sama.', 'err');
+  if (o.password.length < 8) return toast('Password minimal 8 karakter.', 'err');
+  busy(true);
+  try {
+    const r = await api('registerTeacher', o);
+    A.token = r.token;
+    try { sessionStorage.setItem('cbt_stf', r.token); } catch (e) { }
+    ['#rg-pass', '#rg-pass2', '#rg-kode'].forEach(id => $(id).value = '');
+    showRegForm(false);
+    toast('Pendaftaran berhasil. Selamat datang, ' + r.user.nama + '.', 'ok', 6000);
+    enterStaff(r);
+  } catch (e) { toast(errMsg(e), 'err', 6000); }
+  finally { busy(false); }
+});
+api('regStatus').then(r => { $('#reg-link').hidden = !r.aktif; }).catch(() => { });
+
 function staffOut(silent) {
   if (A.token && !silent) api('staffLogout', A.token).catch(() => { });
   A.token = null; A.user = null; A.exams = null;
@@ -1682,12 +1832,21 @@ const KUNCI_HINT = {
   PG: 'Satu huruf, mis. B', PG_KOMPLEKS: 'Beberapa huruf dipisah koma, mis. A,C', BENAR_SALAH: 'Per pernyataan berurutan: B atau S, mis. B,S,B',
   MENJODOHKAN: 'Pasangan nomor-huruf, mis. 1-C, 2-A, 3-B', URUTAN: 'Nomor item dalam urutan benar, mis. 3,1,2',
   SEBAB_AKIBAT: 'A–E', ANALISIS: 'A=(1,2,3) · B=(1,3) · C=(2,4) · D=(4) · E=semua',
-  ISIAN: 'Jawaban benar. Alternatif dipisah | (mis. 0.5|1/2). Toleransi angka pakai ~ (mis. 3.14~0.01)'
+  ISIAN: 'Jawaban benar. Alternatif dipisah | (mis. 0.5|1/2). Toleransi angka pakai ~ (mis. 3.14~0.01)',
+  ISIAN_RUMPANG: 'Satu baris per isian: nomor. jawaban (alternatif pakai |), mis. 11. Harahap|harahap',
+  KATEGORI: 'Kategori tiap item, mis. 1-A, 2-B, 3-A', SISIP_KALIMAT: 'Huruf posisi tanda ■ (A = tanda pertama)'
 };
 const QFIELDS = {
   PG: ['opsi', 'kunci'], PG_KOMPLEKS: ['opsi', 'kunci'], TF: ['kselTF', 'label'], TFNG: ['kselTFNG'], YNNG: ['kselYNNG'],
   BENAR_SALAH: ['pernyataan', 'label', 'kunci'], MENJODOHKAN: ['kiri', 'kanan', 'kunci'], URUTAN: ['item', 'kunci'],
-  SEBAB_AKIBAT: ['pern1', 'alasan', 'kunci'], ANALISIS: ['pernyataan', 'kunci'], ISIAN: ['kunci'], ESAI: ['minkata', 'rubrik'], SPEAKING: ['persiapan', 'durasi', 'rubrik']
+  SEBAB_AKIBAT: ['pern1', 'alasan', 'kunci'], ANALISIS: ['pernyataan', 'kunci'], ISIAN: ['kunci'], ESAI: ['minkata', 'rubrik'], SPEAKING: ['persiapan', 'durasi', 'rubrik'],
+  ISIAN_RUMPANG: ['kuncimulti', 'makskata'], KATEGORI: ['item', 'kategori', 'kunci'], SISIP_KALIMAT: ['kalimat', 'kunci']
+};
+const baseTipe = t => VARIAN_BASE[t] || t;
+const SOAL_HINT = {
+  ISIAN_RUMPANG: 'Tulis tempat kosong sebagai [[1]], [[2]] … (nomor boleh mulai dari berapa saja, mis. [[11]]). Tabel: baris diawali & diakhiri |, contoh | Hari | [[1]] |',
+  SISIP_KALIMAT: 'Tulis paragraf lalu tandai posisi sisipan dengan [#] atau [■], mis. … the river. [#] Farmers …',
+  MENJODOHKAN: 'Untuk labelling peta/denah: unggah gambar di Media soal, [KIRI] berisi nomor label, [KANAN] berisi pilihan huruf.'
 };
 
 VIEWS.soal = async (examId) => {
@@ -1714,8 +1873,8 @@ VIEWS.soal = async (examId) => {
     ${d.questions.map((q, i) => {
       const head = q.section !== lastSec ? `<tr><td colspan="7" style="background:var(--hijau-t);font-weight:700">${esc(q.section)}</td></tr>` : '';
       lastSec = q.section;
-      return head + `<tr><td class="num">${q.no || i + 1}</td><td>${esc(TIPE_LABEL[q.tipe] || q.tipe)}</td><td>${esc(snip(q.teks || (q.opsi && q.opsi.pernyataan), 110))}${q.media ? ' <span class="st">media</span>' : ''}</td>
-        <td class="small">${esc(stimName(q.stim))}</td><td><b>${esc(q.kunci || (q.tipe === 'ESAI' || q.tipe === 'SPEAKING' ? 'manual' : '—'))}</b></td><td class="num">${q.bobot}</td>
+      return head + `<tr><td class="num">${q.no || i + 1}</td><td>${esc(tipeName(q))}</td><td>${esc(snip(q.teks || (q.opsi && q.opsi.pernyataan), 110))}${q.media ? ' <span class="st">media</span>' : ''}</td>
+        <td class="small">${esc(stimName(q.stim))}</td><td><b>${esc(q.tipe === 'ISIAN_RUMPANG' ? (() => { try { return JSON.parse(q.kunci).join(' / '); } catch (e) { return q.kunci; } })() : (q.kunci || (q.tipe === 'ESAI' || q.tipe === 'SPEAKING' ? 'manual' : '—')))}</b></td><td class="num">${q.bobot}</td>
         <td style="white-space:nowrap"><button class="btn sm ghost" data-pv="${i}">Lihat</button>${can ? ` <button class="btn sm ghost" data-ed="${i}">Ubah</button> <button class="btn sm ghost" data-del="${i}">Hapus</button>` : ''}</td></tr>`;
     }).join('')}</tbody></table></div>
     ${can ? '<p class="small muted"><a href="#" id="q-renum">Rapikan penomoran 1..n</a></p>' : ''}`;
@@ -1740,13 +1899,20 @@ function qPreviewHtml(q, stim) {
     case 'ANALISIS': body = (o.pernyataan || []).map((p, i) => `<div>(${i + 1}) ${rich(p)}</div>`).join('') + FIXED_TEXT.ANALISIS.map((t, i) => optRow(LETTERS[i], t, ks.includes(LETTERS[i]))).join(''); break;
     case 'BENAR_SALAH': body = `<table class="bs-table"><tr><th>Pernyataan</th><th>Kunci</th></tr>${(o.pernyataan || []).map((p, i) => `<tr><td>${rich(p)}</td><td>${ks[i] === 'B' ? esc(o.label[0]) : esc(o.label[1])}</td></tr>`).join('')}</table>`; break;
     case 'MENJODOHKAN': body = `<div class="grid2"><div>${(o.kiri || []).map((k, i) => `<div>${i + 1}. ${rich(k)} → <b>${esc(ks[i] || '?')}</b></div>`).join('')}</div><div>${Object.keys(o.kanan || {}).map(L => `<div>${L}. ${rich(o.kanan[L])}</div>`).join('')}</div></div>`; break;
+    case 'ISIAN_RUMPANG': {
+      let ks = []; try { ks = JSON.parse(q.kunci || '[]'); } catch (e) { }
+      body = `<p>Kunci: ${(o.blank || []).map((b, i) => `<b>${b}</b> = ${esc(ks[i] || '')}`).join(' · ')}${q.set && q.set.maks_kata ? ' · maks ' + q.set.maks_kata + ' kata' : ''}</p>`; break;
+    }
+    case 'KATEGORI': body = `<div class="box">${Object.keys(o.kategori || {}).map(L => `<b>${L}</b> = ${rich(o.kategori[L])}`).join('<br>')}</div>` +
+      (o.item || []).map((t, i) => `<div>${i + 1}. ${rich(t)} → <b>${esc(ks[i] || '?')}</b></div>`).join(''); break;
+    case 'SISIP_KALIMAT': body = `<div class="box"><b>Kalimat sisipan:</b> ${rich(o.kalimat)}</div><p>Kunci posisi: <b>${esc(q.kunci)}</b></p>`; break;
     case 'URUTAN': body = (o.item || []).map((t, i) => `<div>${i + 1}. ${rich(t)}</div>`).join('') + `<p>Urutan benar: <b>${esc(q.kunci)}</b></p>`; break;
     case 'ESAI': case 'SPEAKING': body = `<p class="muted">Dinilai manual.${q.set && q.set.min_kata ? ' Minimal ' + q.set.min_kata + ' kata.' : ''}${q.tipe === 'SPEAKING' ? ` Persiapan ${q.set.persiapan} dtk, bicara ${q.set.durasi_bicara} dtk.` : ''}</p>${q.rubrik ? `<div class="box"><b>Rubrik:</b><br>${rich(q.rubrik)}</div>` : ''}`; break;
     default: body = `<p>Kunci: <b>${esc(q.kunci)}</b></p>`;
   }
   return `<div class="qprev">${stim ? `<div class="stim" style="position:static;max-height:260px;margin-bottom:14px">${stim.judul ? `<h4>${esc(stim.judul)}</h4>` : ''}${stim.media_url ? mediaTag(stim.media_url) : ''}<div class="txt">${rich(stim.teks)}</div></div>` : ''}
-    <p class="muted small">${esc(q.section)} · ${esc(TIPE_LABEL[q.tipe] || q.tipe)} · bobot ${q.bobot}${q.set && q.set.putar_sekali ? ' · audio diputar sekali' : ''}</p>
-    ${q.media ? `<div class="qmedia">${mediaTag(q.media)}</div>` : ''}<div class="qtext">${rich(q.teks)}</div><div class="opts">${body}</div>
+    <p class="muted small">${esc(q.section)} · ${esc(tipeName(q))} · bobot ${q.bobot}${q.set && q.set.putar_sekali ? ' · audio diputar sekali' : ''}</p>
+    ${q.media ? `<div class="qmedia">${mediaTag(q.media)}</div>` : ''}<div class="qtext">${rich(q.teks).replace(/\[\[(\d{1,3})\]\]/g, '<span class="blank-w"><b>$1</b>________</span>').replace(/\[■\]/g, '<b>■</b>')}</div><div class="opts">${body}</div>
     ${q.pembahasan ? `<div class="box" style="margin-top:12px"><b>Pembahasan:</b><br>${rich(q.pembahasan)}</div>` : ''}</div>`;
 }
 
@@ -1758,7 +1924,8 @@ function previewQ(q, d) {
 
 function questionForm(examId, q) {
   const d = A.qd, F = q ? q.F : { TIPE: 'PG', SECTION: (d.questions[d.questions.length - 1] || {}).section || '', BOBOT: 1 };
-  const tipeOpts = Object.keys(TIPE_LABEL).map(t => `<option value="${t}" ${t === F.TIPE ? 'selected' : ''}>${esc(TIPE_LABEL[t])}</option>`).join('');
+  const tipeOpts = `<optgroup label="Tipe dasar">${Object.keys(TIPE_LABEL).map(t => `<option value="${t}" ${t === F.TIPE ? 'selected' : ''}>${esc(TIPE_LABEL[t])}</option>`).join('')}</optgroup>
+    <optgroup label="Format khusus (IELTS, TOEFL, SAT, dll.)">${Object.keys(VARIAN_LABEL).map(t => `<option value="${t}" ${t === F.TIPE ? 'selected' : ''}>${esc(VARIAN_LABEL[t])} — ${esc(TIPE_LABEL[VARIAN_BASE[t]])}</option>`).join('')}</optgroup>`;
   const stimOpts = `<option value="">Tanpa bacaan</option>` + d.stimuli.map(s => `<option value="${esc(s.stimulus_id)}" ${q && q.stim === s.stimulus_id ? 'selected' : ''}>${esc(s.judul || snip(s.teks, 50))}</option>`).join('');
   const ta = (id, lbl, val, rows, ph) => `<label class="fld" data-g="${id}"><span>${lbl}</span><textarea class="in" id="qf-${id}" rows="${rows || 3}" placeholder="${esc(ph || '')}">${esc(val || '')}</textarea></label>`;
   const inp = (id, lbl, val, ph, type) => `<label class="fld" data-g="${id}"><span>${lbl}</span><input class="in" id="qf-${id}" type="${type || 'text'}" value="${esc(val == null ? '' : val)}" placeholder="${esc(ph || '')}"></label>`;
@@ -1785,7 +1952,11 @@ function questionForm(examId, q) {
       ${inp('label', 'Label pilihan', F.LABEL, 'Benar/Salah, Ya/Tidak, True/False')}
       ${ta('kiri', 'Kolom kiri (satu item per baris)', F.KIRI, 4)}
       ${ta('kanan', 'Kolom kanan (A. …, B. …)', F.KANAN, 4)}
-      ${ta('item', 'Item yang diurutkan (satu per baris)', F.ITEM, 4)}
+      ${ta('item', 'Item (satu per baris)', F.ITEM, 4)}
+      ${ta('kategori', 'Kategori / kolom (A. …, B. …)', F.KATEGORI, 3, 'A. Mamalia\nB. Reptil')}
+      ${ta('kalimat', 'Kalimat yang disisipkan', F.KALIMAT, 2)}
+      ${ta('kuncimulti', 'Kunci tiap isian (satu baris per nomor)', F.KUNCI, 5, '11. Harahap|harahap\n12. 15')}
+      ${inp('makskata', 'Batas kata per isian (0 = tanpa batas)', F.MAKS_KATA, 'mis. 2 untuk NO MORE THAN TWO WORDS', 'number')}
       ${sel('kselTF', 'Kunci', ['TRUE', 'FALSE'], F.KUNCI)}${sel('kselTFNG', 'Kunci', ['TRUE', 'FALSE', 'NOT GIVEN'], F.KUNCI)}${sel('kselYNNG', 'Kunci', ['YES', 'NO', 'NOT GIVEN'], F.KUNCI)}
       ${inp('kunci', 'Kunci jawaban', F.KUNCI, '')}
       ${inp('minkata', 'Minimal kata', F.MIN_KATA, 'mis. 250', 'number')}
@@ -1797,10 +1968,11 @@ function questionForm(examId, q) {
     actions: [{ label: 'Batal' }, {
       label: 'Simpan soal', cls: 'pri', onClick: async () => {
         const t = $('#qf-tipe').value, v = id => ($('#qf-' + id) || {}).value || '';
+        const bt = baseTipe(t);
         const G = { TIPE: t, SECTION: v('section'), SOAL: v('soal'), BOBOT: v('bobot'), PEMBAHASAN: v('pembahasan'), RUBRIK: v('rubrik'), PUTAR_SEKALI: $('#qf-once').checked ? 'YA' : '' };
         const med = v('media').trim();
         if (med) { if (/^drive:/.test(med)) G.MEDIA = med; else G[$('#qf-mt').value] = med; }
-        const f = QFIELDS[t] || [];
+        const f = QFIELDS[bt] || [];
         if (f.includes('opsi')) 'ABCDEF'.split('').forEach(L => G[L] = v(L));
         if (f.includes('pernyataan')) G.PERNYATAAN = v('pernyataan');
         if (f.includes('pern1')) G.PERNYATAAN = v('pern1');
@@ -1808,9 +1980,12 @@ function questionForm(examId, q) {
         if (f.includes('label')) G.LABEL = v('label');
         if (f.includes('kiri')) { G.KIRI = v('kiri'); G.KANAN = v('kanan'); }
         if (f.includes('item')) G.ITEM = v('item');
+        if (f.includes('kategori')) G.KATEGORI = v('kategori');
+        if (f.includes('kalimat')) G.KALIMAT = v('kalimat');
+        if (f.includes('makskata')) G.MAKS_KATA = v('makskata');
         if (f.includes('minkata')) G.MIN_KATA = v('minkata');
         if (f.includes('persiapan')) { G.PERSIAPAN = v('persiapan'); G.DURASI_BICARA = v('durasi'); }
-        G.KUNCI = f.includes('kselTF') ? v('kselTF') : f.includes('kselTFNG') ? v('kselTFNG') : f.includes('kselYNNG') ? v('kselYNNG') : v('kunci');
+        G.KUNCI = f.includes('kuncimulti') ? v('kuncimulti') : f.includes('kselTF') ? v('kselTF') : f.includes('kselTFNG') ? v('kselTFNG') : f.includes('kselYNNG') ? v('kselYNNG') : v('kunci');
         await run('saveQuestion', examId, q ? q.id : '', G, $('#qf-stim').value, v('nomor'));
         toast('Soal tersimpan.', 'ok');
         nav('soal', examId);
@@ -1818,7 +1993,7 @@ function questionForm(examId, q) {
     }]
   });
   const toggle = () => {
-    const t = $('#qf-tipe').value, f = QFIELDS[t] || [];
+    const t = baseTipe($('#qf-tipe').value), f = QFIELDS[t] || [];
     $$('[data-g]', m.box).forEach(el => {
       const g = el.dataset.g;
       if (['section', 'nomor', 'soal', 'bobot', 'pembahasan'].includes(g)) return;
@@ -1826,6 +2001,7 @@ function questionForm(examId, q) {
     });
     const k = $('#qf-kunci'); if (k) k.placeholder = KUNCI_HINT[t] || '';
     const kl = $('[data-g="kunci"] span', m.box); if (kl) kl.textContent = 'Kunci jawaban — ' + (KUNCI_HINT[t] || '');
+    const sh = $('[data-g="soal"] span', m.box); if (sh) sh.textContent = 'Teks soal' + (SOAL_HINT[t] ? ' — ' + SOAL_HINT[t] : '');
   };
   $('#qf-tipe').onchange = toggle; toggle();
   $('#qf-file').onchange = async ev => {
@@ -2076,6 +2252,8 @@ function fmtAns(it) {
     case 'BENAR_SALAH': return (o.pernyataan || []).map((p, i) => `${i + 1}. ${esc(a[i] === 'B' ? o.label[0] : a[i] === 'S' ? o.label[1] : '—')}`).join('<br>');
     case 'MENJODOHKAN': return (o.kiri || []).map((k, i) => `${i + 1}-${esc(a[i] || '?')}`).join(', ');
     case 'URUTAN': return esc(Object.keys(a).sort((x, y) => a[x] - a[y]).map(k => Number(k) + 1).join(', '));
+    case 'ISIAN_RUMPANG': return (o.blank || []).map(b => `<b>${b}</b>: ${esc(a[b] || '—')}`).join('<br>');
+    case 'KATEGORI': return (o.item || []).map((k, i) => `${i + 1}-${esc(a[i] || '?')}`).join(', ');
     case 'ESAI': return `<div class="box" style="font-family:var(--serif);white-space:pre-wrap">${esc(a)}</div><span class="small muted">${String(a).trim().split(/\s+/).filter(Boolean).length} kata</span>`;
     case 'SPEAKING': return a && a.rec ? mediaTag(a.rec, 'audio') : '<span class="muted">Tidak ada rekaman</span>';
     default: return esc(typeof a === 'object' ? JSON.stringify(a) : a);
@@ -2091,9 +2269,9 @@ async function sessionDetail(sid, after) {
     body: `<p class="muted">${esc(i.nisn)} · ${stPill(i.status)} · mulai ${esc(i.mulai)} · selesai ${esc(i.selesai || '-')} · objektif ${d.nilai.obj} + manual ${d.nilai.man} dari ${d.nilai.max}</p>
       ${d.viol.length ? `<details class="card"><summary><b>${d.viol.length} pelanggaran tercatat</b></summary>${d.viol.map(v => `<div class="small">${esc(v.waktu)} · ${esc(v.jenis)} — ${esc(v.detail)} <i>(${esc(v.tindakan)})</i></div>`).join('')}</details>` : '<p class="small">Tidak ada pelanggaran.</p>'}
       <div class="tbl-wrap"><table class="t"><thead><tr><th class="num">No</th><th>Soal</th><th>Jawaban siswa</th><th>Kunci</th><th class="num">Skor</th></tr></thead><tbody>
-      ${d.items.map(it => `<tr><td class="num">${it.no}</td><td style="max-width:320px"><span class="small muted">${esc(TIPE_LABEL[it.tipe] || it.tipe)}</span><br>${rich(snip(it.teks, 220))}
+      ${d.items.map(it => `<tr><td class="num">${it.no}</td><td style="max-width:320px"><span class="small muted">${esc(tipeName(it))}</span><br>${rich(snip(it.teks, 220))}
           ${it.manual && it.rubrik ? `<details><summary class="small">Rubrik</summary><div class="small">${rich(it.rubrik)}</div></details>` : ''}</td>
-        <td style="max-width:380px">${fmtAns(it)}</td><td><b>${esc(it.manual ? 'manual' : it.kunci)}</b></td>
+        <td style="max-width:380px">${fmtAns(it)}</td><td><b>${esc(it.manual ? 'manual' : it.tipe === 'ISIAN_RUMPANG' ? (() => { try { return JSON.parse(it.kunci).join(' / '); } catch (e) { return it.kunci; } })() : it.kunci)}</b></td>
         <td class="num">${it.manual && d.bisa_nilai
           ? `<input class="in" type="number" step="0.5" min="0" max="${it.maks}" data-ms="${esc(it.id)}" value="${esc(it.skor_manual)}" style="width:80px"> / ${it.maks}`
           : `<span style="color:${col[it.st] || 'inherit'};font-weight:700">${it.skor}</span> / ${it.maks}`}</td></tr>`).join('')}
@@ -2219,8 +2397,14 @@ function studentImport() {
 
 /* ================= PENGGUNA ================= */
 VIEWS.pengguna = async () => {
-  const list = await call('listUsers');
+  const [list, reg] = await Promise.all([call('listUsers'), call('getRegSettings')]);
   M.innerHTML = `<div class="ph"><div><h1>Akun guru &amp; admin</h1><p>Admin: akses penuh. Guru: ujian miliknya. Pengawas: memantau dan mengawasi saja.</p></div><button class="btn pri" id="us-new">Tambah akun</button></div>
+    <div class="card"><h3>Registrasi guru mandiri</h3>
+      <p class="small muted">Guru dapat membuat akun sendiri dari halaman login (tab Guru &amp; Admin → Daftar sebagai guru) dengan kode di bawah. Akun hasil registrasi selalu berperan Guru dan hanya dapat mengakses ujian &amp; soal miliknya sendiri.</p>
+      <div class="row gap"><span>Status: ${reg.aktif ? '<span class="st AKTIF">DIBUKA</span>' : '<span class="st DRAFT">DITUTUP</span>'}</span>
+        <span>Kode registrasi: <span class="token">${esc(reg.kode)}</span></span>
+        <button class="btn sm ghost" id="rg-toggle">${reg.aktif ? 'Tutup pendaftaran' : 'Buka pendaftaran'}</button>
+        <button class="btn sm ghost" id="rg-new">Buat kode baru</button></div></div>
     <div class="tbl-wrap"><table class="t"><thead><tr><th>Nama</th><th>Username</th><th>Peran</th><th>Mapel</th><th>Status</th><th>Login terakhir</th><th></th></tr></thead><tbody>
     ${list.map(u => `<tr><td>${esc(u.nama_lengkap)}</td><td>${esc(u.username)}</td><td>${esc(u.role)}</td><td>${esc(u.mapel_diampu)}</td><td>${stPill(u.status)}</td><td>${esc(u.last_login)}</td>
       <td style="white-space:nowrap"><button class="btn sm ghost" data-e="${esc(u.user_id)}">Ubah</button> <button class="btn sm ghost" data-d="${esc(u.user_id)}">Hapus</button></td></tr>`).join('')}</tbody></table></div>`;
@@ -2244,6 +2428,11 @@ VIEWS.pengguna = async () => {
     });
   };
   $('#us-new').onclick = () => form(null);
+  $('#rg-toggle').onclick = async () => { await run('saveRegSettings', !reg.aktif, false); nav('pengguna'); };
+  $('#rg-new').onclick = async () => {
+    if (!await confirmBox('Buat kode registrasi baru? Kode lama tidak berlaku lagi.')) return;
+    await run('saveRegSettings', reg.aktif, true); nav('pengguna');
+  };
   $$('[data-e]', M).forEach(b => b.onclick = () => form(list.find(u => u.user_id === b.dataset.e)));
   $$('[data-d]', M).forEach(b => b.onclick = async () => {
     if (!await confirmBox('Hapus akun ini?', 'Hapus', 'warn')) return;
