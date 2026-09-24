@@ -1,0 +1,2278 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <title>CBT Resmi SMAIT Al-Ittihad</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <script>
+  /* =====================================================================
+     URL SERVER — TEMPEL URL WEB APP GOOGLE APPS SCRIPT DI SINI
+     Ambil dari Apps Script: Deploy → Manage deployments → Web app → URL
+     Contoh: https://script.google.com/macros/s/AKfycbx.............../exec
+     ===================================================================== */
+  const CBT_CONFIG = {
+    GAS_URL: 'PASTE_URL_WEB_APP_DI_SINI',
+    SEKOLAH: 'SMAIT Al-Ittihad'
+  };
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <style>
+:root{
+  --ink:#1C2A27; --muted:#5E6E69; --line:#D5DDD8; --paper:#FAFBF9; --white:#FFFFFF;
+  --hijau:#0F5C4D; --hijau-d:#0A4337; --hijau-t:#E3EFEA;
+  --emas:#C7962B; --emas-t:#FBF3E0; --merah:#B3261E; --merah-t:#FBE9E7; --biru:#1F5A8C;
+  --fs:17px; --r:10px;
+  --sans:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--emas);outline-offset:2px}
+.view{display:none;min-height:100%}
+.view.on{display:block}
+.muted{color:var(--muted)} .small{font-size:13px}
+.row{display:flex;align-items:center;flex-wrap:wrap}.gap{gap:10px}.sp{justify-content:space-between}
+.upper{text-transform:uppercase}
+[hidden]{display:none!important}
+
+/* ---------- tombol & form ---------- */
+.btn{border:1.5px solid transparent;border-radius:8px;padding:10px 18px;font-weight:600;cursor:pointer;background:var(--white);color:var(--ink);transition:background .15s,border-color .15s}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.pri{background:var(--hijau);color:#fff}.btn.pri:hover:not(:disabled){background:var(--hijau-d)}
+.btn.dark{background:var(--ink);color:#fff}
+.btn.ghost{border-color:var(--line);background:transparent}.btn.ghost:hover:not(:disabled){border-color:var(--ink)}
+.btn.warn{background:var(--merah);color:#fff}
+.btn.gold{background:var(--emas);color:#fff}
+.btn.sm{padding:6px 12px;font-size:13px}
+.btn.wide{width:100%}
+.fld{display:block;margin-bottom:14px}
+.fld>span{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--muted)}
+.fld input,.fld select,.fld textarea,input.in,select.in,textarea.in{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:#fff}
+.fld input:focus,.fld select:focus,.fld textarea:focus,.in:focus{border-color:var(--hijau);outline:none}
+textarea{resize:vertical}
+.check{display:flex;gap:10px;align-items:flex-start;cursor:pointer;margin:14px 0}
+.check input{margin-top:4px;width:18px;height:18px;accent-color:var(--hijau)}
+.hint{font-size:13px;color:var(--muted);margin:12px 0 0}
+
+/* ---------- login ---------- */
+.login-wrap{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr;align-items:center;gap:6vw;padding:6vh 7vw;
+  background:linear-gradient(90deg,var(--hijau) 0 52%,var(--paper) 52%)}
+.login-brand{color:#fff;max-width:520px}
+.crest{width:64px;height:64px;color:var(--emas);margin-bottom:26px}
+.login-brand h1{font-size:clamp(34px,4.6vw,58px);line-height:1.02;margin:0 0 18px;font-weight:800;letter-spacing:-.02em}
+.login-brand h1 span{display:block;font-weight:500}
+.login-brand p{opacity:.85;max-width:40ch;font-size:16px}
+.login-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;max-width:420px;width:100%;box-shadow:0 20px 50px -30px rgba(15,92,77,.5)}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--hijau-t);border-radius:9px;padding:4px;margin-bottom:22px}
+.seg-b{border:0;background:transparent;padding:9px;border-radius:7px;font-weight:600;cursor:pointer;color:var(--muted)}
+.seg-b.on{background:#fff;color:var(--hijau);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tabp{display:none}.tabp.on{display:block}
+#in-token{letter-spacing:.2em;font-weight:700}
+
+/* ---------- konfirmasi ---------- */
+.confirm{max-width:640px;margin:0 auto;padding:7vh 22px}
+.confirm h2{font-size:32px;line-height:1.1;margin:4px 0 22px;letter-spacing:-.01em}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:8px 22px;margin:0 0 26px;padding:18px 0;border-top:1.5px solid var(--ink);border-bottom:1px solid var(--line)}
+.kv dt{color:var(--muted)}.kv dd{margin:0;font-weight:600}
+.rules{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px 22px}
+.rules h3{margin:0 0 8px;font-size:16px}
+.rules ol{margin:0;padding-left:20px}.rules li{margin:6px 0}
+
+/* ---------- ruang ujian ---------- */
+#v-exam.on{display:flex;flex-direction:column;height:100vh;height:100dvh}
+.xbar{display:grid;grid-template-columns:1fr auto auto;gap:22px;align-items:center;padding:10px 22px;background:var(--ink);color:#fff}
+.xbar-id{display:flex;flex-direction:column;min-width:0}
+.xbar-id strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xbar-id span{font-size:13px;opacity:.75}
+.xbar-mid{display:flex;gap:14px;align-items:center}
+.savestate{font-size:12px;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.12)}
+.savestate.err{background:var(--merah)}
+.savestate.busy{background:rgba(199,150,43,.35)}
+.vmeter{display:flex;align-items:center;gap:7px;font-size:13px}
+.vmeter i{width:10px;height:10px;border-radius:50%;background:#6FBF8F}
+.vmeter.hot i{background:var(--emas)} .vmeter.max i{background:var(--merah)}
+.xbar-time{text-align:right;line-height:1.1}
+.xbar-time .lbl{display:block;font-size:11px;opacity:.7}
+.clock{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.clock.low{color:#FFB4A9}
+.dock{display:flex;align-items:center;gap:14px;padding:8px 22px;background:var(--hijau-t);border-bottom:1px solid var(--line);font-size:14px}
+.dock audio{height:36px;flex:1;max-width:520px}
+.xmain{display:grid;grid-template-columns:1fr 272px;min-height:0;flex:1}
+.xpane{overflow:auto;padding:22px 28px 40px;font-size:var(--fs)}
+.split{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:28px;align-items:start}
+.stim{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px 24px;max-height:calc(100vh - 210px);overflow:auto;position:sticky;top:0}
+.stim h4{margin:0 0 10px;font-size:1em}
+.stim .txt{font-family:var(--serif);line-height:1.7;font-size:1.02em}
+.qhead{display:flex;align-items:baseline;gap:12px;margin-bottom:12px}
+.qno{font-size:2.1em;font-weight:800;line-height:1;color:var(--hijau);font-variant-numeric:tabular-nums}
+.qmeta{font-size:13px;color:var(--muted)}
+.qtext{line-height:1.65;margin-bottom:18px}
+.qtext img,.stim img,.qmedia img{max-width:100%;height:auto;border-radius:6px;border:1px solid var(--line);margin:6px 0;display:block}
+.qmedia{margin:0 0 14px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;padding:11px 14px;border:1.5px solid var(--line);border-radius:9px;background:#fff;cursor:pointer;transition:border-color .12s,background .12s}
+.opt:hover{border-color:var(--hijau)}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt .L{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;font-weight:700;font-size:.85em}
+.opt.sel{border-color:var(--hijau);background:var(--hijau-t)}
+.opt.sel .L{background:var(--hijau);border-color:var(--hijau);color:#fff}
+.opt.chk .L{border-radius:6px}
+.pill-hint{display:inline-block;font-size:13px;background:var(--emas-t);color:#7A5A12;padding:3px 10px;border-radius:99px;margin-bottom:10px}
+.bs-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.bs-table th,.bs-table td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.bs-table th{background:var(--hijau-t);font-size:.85em}
+.bs-table td.c{text-align:center;width:84px}
+.bs-table input{width:20px;height:20px;accent-color:var(--hijau)}
+.match-row{display:grid;grid-template-columns:28px 1fr 130px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.box{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;margin-bottom:14px}
+.ans-in{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:9px;background:#fff;font-size:1em}
+.ans-in:focus{border-color:var(--hijau);outline:none}
+textarea.ans-in{min-height:280px;line-height:1.6;font-family:var(--serif)}
+.wc{font-size:13px;color:var(--muted);margin-top:6px}.wc.ok{color:var(--hijau)}
+.sab{display:grid;gap:8px;margin-bottom:16px}
+.sab .box{margin:0}.sab .sebab{font-weight:800;letter-spacing:.2em;text-align:center;color:var(--hijau)}
+.cue{border:2px solid var(--ink);border-radius:var(--r);padding:18px 22px;background:#fff;font-family:var(--serif);line-height:1.7}
+.rec{margin-top:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.rec .big{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
+.rec .dot{width:12px;height:12px;border-radius:50%;background:var(--merah);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.rec .dot{animation:none}}
+
+/* lembar jawaban (LJK) */
+.ljk{border-left:1px solid var(--line);background:#fff;padding:16px;display:flex;flex-direction:column;gap:12px;overflow:auto}
+.ljk-head{display:flex;justify-content:space-between;font-weight:700;font-size:14px}
+.ljk-sec{font-size:11px;color:var(--muted);margin:6px 0 2px;grid-column:1/-1}
+.ljk-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+.bub{aspect-ratio:1;border-radius:50%;border:1.5px solid var(--ink);background:#fff;font-size:12px;font-weight:700;cursor:pointer;display:grid;place-items:center;font-variant-numeric:tabular-nums;padding:0}
+.bub.ans{background:var(--ink);color:#fff}
+.bub.flag{box-shadow:0 0 0 3px var(--emas);}
+.bub.cur{outline:2.5px solid var(--hijau);outline-offset:2px}
+.bub:disabled{opacity:.35;cursor:not-allowed}
+.ljk-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+.ljk-legend .b{display:inline-block;width:11px;height:11px;border-radius:50%;border:1.5px solid var(--ink);margin-right:4px;vertical-align:-1px}
+.ljk-legend .b.ans{background:var(--ink)} .ljk-legend .b.flag{box-shadow:0 0 0 2px var(--emas)}
+.ljk-tools{display:flex;gap:6px}
+.xnav{display:flex;justify-content:space-between;align-items:center;padding:10px 22px;border-top:1px solid var(--line);background:#fff}
+.flagbtn{display:flex;align-items:center;gap:8px;font-weight:600;cursor:pointer;padding:8px 14px;border-radius:8px;border:1.5px solid var(--emas);color:#7A5A12}
+.flagbtn input{accent-color:var(--emas);width:18px;height:18px}
+#wm{position:fixed;inset:0;pointer-events:none;z-index:5;opacity:.07;background-repeat:repeat}
+#v-exam,#v-exam *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#v-exam input,#v-exam textarea{-webkit-user-select:text;user-select:text}
+
+/* ---------- selesai ---------- */
+.done{max-width:520px;margin:0 auto;padding:14vh 22px;text-align:center}
+.done-mark{width:72px;height:72px;margin:0 auto 18px;color:var(--hijau)}
+.done h2{font-size:30px;margin:0 0 8px}
+.score{font-size:64px;font-weight:800;color:var(--hijau);margin:18px 0;font-variant-numeric:tabular-nums}
+
+/* ---------- overlay, modal, toast ---------- */
+.ov{position:fixed;inset:0;background:rgba(28,42,39,.72);display:grid;place-items:center;z-index:50;padding:18px}
+.ov-card{background:#fff;border-radius:14px;padding:28px;max-width:460px;text-align:center}
+.ov-card.danger{border-top:6px solid var(--merah)}
+.ov-card h2{margin:0 0 10px}
+.warnbar{position:fixed;top:0;left:0;right:0;z-index:60;background:var(--merah);color:#fff;padding:14px 22px;font-weight:600;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.modal{background:#fff;border-radius:14px;width:min(760px,100%);max-height:92vh;display:flex;flex-direction:column}
+.modal.wide{width:min(1100px,100%)}
+.m-head{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.m-head h3{margin:0;font-size:18px}
+.m-body{padding:18px 22px;overflow:auto}
+.m-foot{padding:14px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.x{border:0;background:transparent;font-size:22px;cursor:pointer;line-height:1;color:var(--muted)}
+#toasts{position:fixed;right:16px;bottom:16px;z-index:70;display:flex;flex-direction:column;gap:8px;max-width:380px}
+.toast{background:var(--ink);color:#fff;padding:11px 16px;border-radius:9px;font-size:14px;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.toast.ok{background:var(--hijau)} .toast.err{background:var(--merah)} .toast.warn{background:#8A5A00}
+#busy{position:fixed;inset:0;z-index:80;background:rgba(250,251,249,.6);display:grid;place-items:center}
+#busy span{width:38px;height:38px;border-radius:50%;border:4px solid var(--hijau-t);border-top-color:var(--hijau);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- dasbor staf ---------- */
+#v-staff.on{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+.side{background:var(--hijau);color:#fff;padding:20px 14px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh}
+.side-brand strong{display:block;font-size:16px}.side-brand .js-sekolah{font-size:inherit;opacity:1}.side-brand span{font-size:12px;opacity:.75}
+.side nav{display:flex;flex-direction:column;gap:2px;flex:1;overflow:auto}
+.side nav a{padding:9px 12px;border-radius:7px;cursor:pointer;color:rgba(255,255,255,.82);font-weight:500;display:flex;justify-content:space-between;align-items:center}
+.side nav a:hover{background:rgba(255,255,255,.08)}
+.side nav a.on{background:#fff;color:var(--hijau);font-weight:700}
+.side nav em{font-style:normal;background:var(--merah);color:#fff;font-size:11px;padding:1px 7px;border-radius:99px}
+.side .btn.ghost{color:#fff;border-color:rgba(255,255,255,.35)}
+.smain{padding:26px 32px 60px;min-width:0}
+.ph{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.ph h1{margin:0;font-size:26px;letter-spacing:-.01em}
+.ph p{margin:4px 0 0;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border-top:1.5px solid var(--ink);border-bottom:1px solid var(--line);margin-bottom:26px}
+.stat{padding:16px 18px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat b{display:block;font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat span{font-size:13px;color:var(--muted)}
+.stat.alert b{color:var(--merah)}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:18px}
+.card h3{margin:0 0 12px;font-size:16px}
+.tbl-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:var(--r)}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th{text-align:left;font-size:12px;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:1.5px solid var(--ink);white-space:nowrap;background:#fff;position:sticky;top:0}
+table.t td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t tr:hover td{background:#F4F7F5}
+table.t td.num,table.t th.num{text-align:right;font-variant-numeric:tabular-nums}
+.st{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;background:#EEF1EF;color:var(--muted);white-space:nowrap}
+.st.AKTIF,.st.MENGERJAKAN{background:var(--hijau-t);color:var(--hijau)}
+.st.TERKUNCI,.st.DIHENTIKAN{background:var(--merah-t);color:var(--merah)}
+.st.SELESAI,.st.DINILAI{background:#E4ECF4;color:var(--biru)}
+.st.DRAFT,.st.BELUM{background:#EEF1EF}
+.st.KOREKSI{background:var(--emas-t);color:#7A5A12}
+.dotl{display:inline-block;width:8px;height:8px;border-radius:50%;background:#B9C4BF;margin-right:6px}
+.dotl.on{background:#2BA36B}
+.bar{height:6px;background:#EEF1EF;border-radius:99px;overflow:hidden;min-width:80px}
+.bar i{display:block;height:100%;background:var(--hijau)}
+.vchips{display:flex;gap:4px;flex-wrap:wrap}
+.vchips span{font-size:11px;padding:1px 6px;border-radius:5px;background:#EEF1EF}
+.vchips span.h{background:var(--merah-t);color:var(--merah);font-weight:700}
+.token{font-family:var(--sans);font-weight:800;letter-spacing:.18em;background:var(--emas-t);color:#6A4C0C;padding:3px 10px;border-radius:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feed{max-height:560px;overflow:auto}
+.feed div{padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.feed b{display:block}
+.mon{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+.menu{position:relative;display:inline-block}
+.menu-list{position:absolute;right:0;top:100%;z-index:20;background:#fff;border:1px solid var(--line);border-radius:9px;box-shadow:0 12px 30px rgba(0,0,0,.12);min-width:190px;padding:5px}
+.menu-list button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:14px}
+.menu-list button:hover{background:var(--hijau-t)}
+.menu-list button.dng{color:var(--merah)}
+.qprev{font-size:14px;line-height:1.55}
+.qprev .opt{padding:6px 10px;grid-template-columns:26px 1fr}
+.qprev .opt .L{width:22px;height:22px;font-size:11px}
+.errs{background:var(--merah-t);color:var(--merah);border-radius:8px;padding:8px 12px;font-size:13px;margin-top:8px}
+.oklist{background:var(--hijau-t);border-radius:8px;padding:8px 12px;font-size:13px}
+.tabs{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--line)}
+.tabs button{border:0;background:transparent;padding:9px 14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--hijau);border-color:var(--hijau)}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.filters .in{width:auto;min-width:180px}
+pre.code{background:#F2F5F3;border-radius:8px;padding:12px;font-size:12.5px;overflow:auto;white-space:pre-wrap}
+.empty{padding:40px 20px;text-align:center;color:var(--muted)}
+.empty .btn{margin-top:12px}
+.warnbox{background:var(--merah-t);color:var(--merah);padding:12px 16px;border-radius:9px;margin-bottom:18px;font-weight:600}
+
+/* ---------- responsif ---------- */
+@media (max-width:980px){
+  .login-wrap{grid-template-columns:1fr;background:var(--hijau);padding:6vh 22px;gap:28px}
+  .login-card{justify-self:center}
+  .xmain{grid-template-columns:1fr}
+  .ljk{border-left:0;border-top:1px solid var(--line);max-height:38vh}
+  .ljk-grid{grid-template-columns:repeat(10,1fr)}
+  .split{grid-template-columns:1fr}
+  .stim{position:static;max-height:none}
+  #v-staff.on{grid-template-columns:1fr}
+  .side{position:static;height:auto}
+  .side nav{flex-direction:row;flex-wrap:wrap}
+  .mon,.grid2,.grid3{grid-template-columns:1fr}
+  .smain{padding:18px}
+}
+@media (max-width:560px){
+  .xbar{grid-template-columns:1fr auto;gap:10px;padding:8px 12px}
+  .xbar-mid{display:none}
+  .clock{font-size:22px}
+  .xpane{padding:16px}
+  .ljk-grid{grid-template-columns:repeat(7,1fr)}
+  .match-row{grid-template-columns:24px 1fr}
+  .match-row select{grid-column:2}
+}
+</style>
+</head>
+<body>
+
+<!-- ========================= LOGIN ========================= -->
+<section id="v-login" class="view on">
+  <div class="login-wrap">
+    <div class="login-brand">
+      <div class="crest" aria-hidden="true">
+        <svg viewBox="0 0 64 64"><path d="M32 4 58 16v16c0 15-11 25-26 28C17 57 6 47 6 32V16Z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M20 38V24l12-7 12 7v14" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M26 42h12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+      </div>
+      <h1>Ruang Ujian <span><span class="js-sekolah">SMAIT Al-Ittihad</span></span></h1>
+      <p>Sistem ujian berbasis komputer resmi. Seluruh aktivitas di halaman ini direkam dan diawasi.</p>
+    </div>
+
+    <div class="login-card">
+      <div id="conn-warn" class="errs" style="margin-bottom:14px" hidden></div>
+      <div class="seg" role="tablist">
+        <button class="seg-b on" data-tab="siswa" role="tab">Siswa</button>
+        <button class="seg-b" data-tab="staf" role="tab">Guru &amp; Admin</button>
+      </div>
+
+      <form id="f-siswa" class="tabp on" autocomplete="off" onsubmit="return false">
+        <label class="fld"><span>NISN</span>
+          <input id="in-nisn" inputmode="numeric" maxlength="20" placeholder="10 digit NISN" required></label>
+        <label class="fld"><span>Token ujian</span>
+          <input id="in-token" maxlength="10" placeholder="Dari pengawas, mis. K7QM2P" class="upper" required></label>
+        <button id="btn-siswa" class="btn pri wide" type="submit">Masuk ruang ujian</button>
+        <p class="hint">Gunakan satu perangkat saja. Menutup atau memuat ulang halaman tercatat sebagai pelanggaran.</p>
+      </form>
+
+      <form id="f-staf" class="tabp" onsubmit="return false">
+        <label class="fld"><span>Username</span><input id="in-user" autocomplete="username" required></label>
+        <label class="fld"><span>Password</span><input id="in-pass" type="password" autocomplete="current-password" required></label>
+        <button id="btn-staf" class="btn dark wide" type="submit">Masuk dasbor</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= KONFIRMASI SISWA ========================= -->
+<section id="v-confirm" class="view">
+  <div class="confirm">
+    <p class="muted" id="cf-sekolah"></p>
+    <h2 id="cf-judul"></h2>
+    <dl class="kv" id="cf-info"></dl>
+    <div class="rules">
+      <h3>Tata tertib ujian</h3>
+      <ol>
+        <li>Ujian berjalan dalam mode layar penuh. Keluar dari layar penuh tercatat sebagai pelanggaran.</li>
+        <li>Berpindah tab, membuka aplikasi lain, membagi layar, atau memakai monitor kedua tercatat otomatis.</li>
+        <li>Copy, paste, klik kanan, dan pintasan keyboard dinonaktifkan dan setiap percobaan dicatat.</li>
+        <li>Jawaban tersimpan otomatis setiap beberapa detik. Waktu dihitung oleh server, bukan oleh perangkat Anda.</li>
+        <li id="cf-rule-limit"></li>
+      </ol>
+    </div>
+    <label class="check"><input type="checkbox" id="cf-agree"> Saya membaca tata tertib dan mengerjakan ujian dengan jujur.</label>
+    <div class="row gap">
+      <button class="btn ghost" id="cf-back">Kembali</button>
+      <button class="btn pri" id="cf-start" disabled>Mulai ujian</button>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= RUANG UJIAN ========================= -->
+<section id="v-exam" class="view">
+  <header class="xbar">
+    <div class="xbar-id">
+      <strong id="x-judul"></strong>
+      <span id="x-siswa"></span>
+    </div>
+    <div class="xbar-mid">
+      <span class="savestate" id="x-save" title="Status penyimpanan">Tersimpan</span>
+      <span class="vmeter" id="x-viol" title="Pelanggaran tercatat"><i></i><b>0</b></span>
+    </div>
+    <div class="xbar-time">
+      <span class="lbl">Sisa waktu</span>
+      <span class="clock" id="x-clock">--:--:--</span>
+    </div>
+  </header>
+
+  <div id="x-dock" class="dock" hidden></div>
+
+  <main class="xmain">
+    <div class="xpane" id="x-pane"></div>
+    <aside class="ljk">
+      <div class="ljk-head">
+        <span>Lembar jawaban</span>
+        <span id="x-count"></span>
+      </div>
+      <div class="ljk-grid" id="x-grid"></div>
+      <div class="ljk-legend">
+        <span><i class="b ans"></i>Terjawab</span><span><i class="b flag"></i>Ragu-ragu</span><span><i class="b"></i>Kosong</span>
+      </div>
+      <div class="ljk-tools">
+        <button class="btn sm ghost" id="x-font-dn" title="Perkecil huruf">A−</button>
+        <button class="btn sm ghost" id="x-font-up" title="Perbesar huruf">A+</button>
+      </div>
+      <button class="btn pri wide" id="x-submit">Kumpulkan jawaban</button>
+    </aside>
+  </main>
+
+  <footer class="xnav">
+    <button class="btn ghost" id="x-prev">Sebelumnya</button>
+    <label class="flagbtn"><input type="checkbox" id="x-flag"> Ragu-ragu</label>
+    <button class="btn pri" id="x-next">Berikutnya</button>
+  </footer>
+  <div id="wm" aria-hidden="true"></div>
+</section>
+
+<!-- ========================= SELESAI ========================= -->
+<section id="v-done" class="view">
+  <div class="done">
+    <div class="done-mark" aria-hidden="true">
+      <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3"/><path d="m14 25 7 7 13-15" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h2 id="d-title">Jawaban terkumpul</h2>
+    <p id="d-msg"></p>
+    <div id="d-score" class="score" hidden></div>
+    <p class="muted small">Tutup halaman ini dan serahkan kembali perangkat kepada pengawas.</p>
+  </div>
+</section>
+
+<!-- ========================= DASBOR STAF ========================= -->
+<section id="v-staff" class="view">
+  <aside class="side">
+    <div class="side-brand">
+      <strong>CBT <span class="js-sekolah">SMAIT Al-Ittihad</span></strong>
+      <span id="s-user"></span>
+    </div>
+    <nav id="s-nav">
+      <a data-v="beranda">Beranda</a>
+      <a data-v="ujian" data-role="Admin,Guru">Ujian &amp; bank soal</a>
+      <a data-v="awas">Pengawasan langsung <em id="s-badge" hidden></em></a>
+      <a data-v="nilai">Penilaian</a>
+      <a data-v="rekap">Rekap &amp; analisis</a>
+      <a data-v="siswa" data-role="Admin,Guru">Data siswa</a>
+      <a data-v="pengguna" data-role="Admin">Akun guru &amp; admin</a>
+      <a data-v="audit" data-role="Admin">Log aktivitas</a>
+      <a data-v="akun">Akun saya</a>
+    </nav>
+    <button class="btn ghost wide" id="s-logout">Keluar</button>
+  </aside>
+  <main class="smain" id="s-main"></main>
+</section>
+
+<!-- ========================= OVERLAY ========================= -->
+<div id="ov-lock" class="ov" hidden>
+  <div class="ov-card danger">
+    <h2>Ujian dikunci</h2>
+    <p>Pelanggaran Anda mencapai batas. Angkat tangan dan panggil pengawas. Layar terbuka otomatis setelah pengawas membuka kunci.</p>
+    <p class="muted small" id="ov-lock-info"></p>
+  </div>
+</div>
+<div id="ov-fs" class="ov" hidden>
+  <div class="ov-card">
+    <h2>Kembali ke layar penuh</h2>
+    <p>Ujian hanya dapat dilanjutkan dalam mode layar penuh. Kejadian ini sudah tercatat.</p>
+    <button class="btn pri" id="ov-fs-btn">Lanjutkan dalam layar penuh</button>
+  </div>
+</div>
+<div id="ov-warn" class="warnbar" hidden></div>
+<div id="modal" class="ov" hidden><div class="modal" role="dialog" aria-modal="true"></div></div>
+<div id="toasts" aria-live="polite"></div>
+<div id="busy" hidden><span></span></div>
+
+<script>
+/* ===================== UTILITAS BERSAMA ===================== */
+const $ = (s, el) => (el || document).querySelector(s);
+const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+
+const GAS_RE = /^https:\/\/script\.google\.com\/(a\/(macros\/)?[^\/]+\/)?macros\/s\/[\w-]{20,}\/exec$/;
+const HEAVY_FN = /^(previewImportDocx|previewImportJson|commitImport|uploadMedia|stUploadSpeaking|exportRekap|getAnalisis|importStudents)$/;
+const RETRY_FN = /^(studentLogin|stSave|stMedia|staffMe|getDashboard|getMonitor|getNewViolations|list\w+|getRekap|getAnalisis|getSessionDetail|staffMedia|getAuditLog)$/;
+
+let SERVER = (CBT_CONFIG.GAS_URL || '').trim();
+
+
+async function api(fn, ...args) {
+  if (!SERVER || !GAS_RE.test(SERVER)) throw new Error('URL server di index.html belum diisi atau salah. Hubungi admin.');
+  const tries = RETRY_FN.test(fn) ? 2 : 1;
+  let lastErr;
+  for (let t = 0; t < tries; t++) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), HEAVY_FN.test(fn) ? 300000 : 45000);
+    let res;
+    try {
+      res = await fetch(SERVER, {
+        method: 'POST', redirect: 'follow', signal: ctrl.signal,
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },   // text/plain = tanpa preflight CORS
+        body: JSON.stringify({ fn, args })
+      });
+    } catch (e) {
+      clearTimeout(timer);
+      lastErr = new Error(e.name === 'AbortError' ? 'Server terlalu lama merespons. Coba lagi.' : 'NetworkError: tidak dapat menghubungi server.');
+      if (t + 1 < tries) { await new Promise(r => setTimeout(r, 1500)); continue; }
+      throw lastErr;
+    }
+    clearTimeout(timer);
+    if (!res.ok) {
+      lastErr = new Error('Server membalas kode ' + res.status + '. Coba lagi sebentar.');
+      if (t + 1 < tries && res.status >= 500) { await new Promise(r => setTimeout(r, 1500)); continue; }
+      throw lastErr;
+    }
+    let j;
+    try { j = await res.json(); }
+    catch (e) { throw new Error('Balasan server tidak valid. Admin: pastikan Web App di-deploy dengan akses "Anyone" dan versi terbaru.'); }
+    if (!j.ok) throw new Error(j.error || 'Terjadi kesalahan di server.');
+    return j.data;
+  }
+  throw lastErr;
+}
+
+async function pingUrl(url) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 20000);
+  try {
+    const r = await fetch(url + '?api=ping', { redirect: 'follow', signal: ctrl.signal });
+    const j = await r.json();
+    if (!j || !j.ok) throw new Error('bad');
+    return j.data;
+  } finally { clearTimeout(timer); }
+}
+
+function showConn(msg) {
+  const b = document.getElementById('conn-warn');
+  if (b) { b.textContent = msg; b.hidden = false; }
+}
+
+/** Uji koneksi saat halaman dibuka */
+document.addEventListener('DOMContentLoaded', () => {
+  if (!SERVER || /PASTE_URL|GANTI/.test(SERVER)) return showConn('URL server belum diisi. Admin: buka index.html, isi CBT_CONFIG.GAS_URL di bagian paling atas berkas.');
+  if (!GAS_RE.test(SERVER)) return showConn('Format URL server di index.html salah. Gunakan URL Web App Apps Script yang berakhiran /exec.');
+  pingUrl(SERVER)
+    .then(d => { if (d && d.sekolah) $$('.js-sekolah').forEach(el => el.textContent = d.sekolah); })
+    .catch(() => showConn('Server ujian belum terhubung. Periksa internet, atau minta admin memeriksa deployment Web App (akses Anyone, versi terbaru, ada Api.gs).'));
+});
+
+function errMsg(e) {
+  let m = String((e && e.message) || e || 'Terjadi kesalahan.');
+  m = m.replace(/^Error:\s*/, '').replace(/^(SESI_HABIS|SESI_GANDA|SESI_HILANG):\s*/, '');
+  if (/NetworkError|Failed to fetch|network/i.test(m)) m = 'Koneksi internet terputus. Periksa jaringan lalu coba lagi.';
+  return m;
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function showView(id) {
+  $$('.view').forEach(v => v.classList.toggle('on', v.id === id));
+  window.scrollTo(0, 0);
+}
+
+function toast(msg, kind, ms) {
+  const t = document.createElement('div');
+  t.className = 'toast ' + (kind || '');
+  t.textContent = msg;
+  $('#toasts').appendChild(t);
+  setTimeout(() => t.remove(), ms || 4200);
+}
+
+function busy(on) { $('#busy').hidden = !on; }
+
+/** Modal umum. opts: {title, body(html), wide, actions:[{label, cls, onClick(close) → false agar tetap terbuka}]} */
+function modal(opts) {
+  const wrap = $('#modal'), box = wrap.firstElementChild;
+  box.className = 'modal' + (opts.wide ? ' wide' : '');
+  box.innerHTML =
+    `<div class="m-head"><h3>${esc(opts.title || '')}</h3><button class="x" aria-label="Tutup">&times;</button></div>` +
+    `<div class="m-body">${opts.body || ''}</div>` +
+    `<div class="m-foot"></div>`;
+  const close = () => { wrap.hidden = true; box.innerHTML = ''; if (opts.onClose) opts.onClose(); };
+  $('.x', box).onclick = close;
+  if (opts.noClose) $('.x', box).hidden = true;
+  const foot = $('.m-foot', box);
+  (opts.actions || [{ label: 'Tutup', cls: 'ghost' }]).forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'btn ' + (a.cls || 'ghost');
+    b.textContent = a.label;
+    b.onclick = async () => {
+      if (!a.onClick) return close();
+      b.disabled = true;
+      try { const r = await a.onClick(close, box); if (r !== false) close(); }
+      catch (e) { toast(errMsg(e), 'err'); }
+      finally { b.disabled = false; }
+    };
+    foot.appendChild(b);
+  });
+  if (!foot.children.length) foot.hidden = true;
+  wrap.hidden = false;
+  return { close, box };
+}
+
+function confirmBox(msg, okLabel, cls) {
+  return new Promise(res => {
+    modal({
+      title: 'Konfirmasi', body: `<p>${msg}</p>`, onClose: () => res(false),
+      actions: [{ label: 'Batal', cls: 'ghost', onClick: () => { res(false); } },
+                { label: okLabel || 'Ya, lanjutkan', cls: cls || 'pri', onClick: () => { res(true); } }]
+    });
+  });
+}
+
+function promptBox(title, label, def, type) {
+  return new Promise(res => {
+    modal({
+      title, body: `<label class="fld"><span>${esc(label)}</span>${type === 'area'
+        ? `<textarea id="pb-in" rows="4" class="in">${esc(def || '')}</textarea>`
+        : `<input id="pb-in" class="in" type="${type || 'text'}" value="${esc(def || '')}">`}</label>`,
+      onClose: () => res(null),
+      actions: [{ label: 'Batal', cls: 'ghost', onClick: () => { res(null); } },
+                { label: 'Kirim', cls: 'pri', onClick: (c, box) => { res($('#pb-in', box).value); } }]
+    });
+    setTimeout(() => { const i = $('#pb-in'); if (i) i.focus(); }, 50);
+  });
+}
+
+/* ---------- teks kaya: **tebal**, [u]garis bawah[/u], [[IMG:..]], [[AUDIO:..]], rumus \( \) ---------- */
+function mediaTag(ref, kind) {
+  ref = String(ref || '').trim();
+  if (!ref) return '';
+  const isDrive = /^drive:/.test(ref);
+  if (!isDrive && !/^https:\/\//.test(ref)) return '';
+  const t = kind || (/#audio$/.test(ref) || /\.(mp3|wav|ogg|m4a|aac)(\?|$)/i.test(ref) ? 'audio' : 'image');
+  if (t === 'audio') {
+    return isDrive ? `<audio controls preload="none" data-drive="${esc(ref)}" controlsList="nodownload"></audio>`
+                   : `<audio controls preload="none" src="${esc(ref)}" controlsList="nodownload"></audio>`;
+  }
+  return isDrive ? `<img alt="Gambar soal" data-drive="${esc(ref)}" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">`
+                 : `<img alt="Gambar soal" src="${esc(ref)}" referrerpolicy="no-referrer">`;
+}
+
+function rich(t) {
+  if (t == null || t === '') return '';
+  let s = esc(String(t));
+  s = s.replace(/\[\[IMG:([^\]]+)\]\]/g, (m, u) => mediaTag(u.replace(/&amp;/g, '&'), 'image'));
+  s = s.replace(/\[\[AUDIO:([^\]]+)\]\]/g, (m, u) => mediaTag(u.replace(/&amp;/g, '&'), 'audio'));
+  s = s.replace(/\*\*([\s\S]+?)\*\*/g, '<b>$1</b>');
+  s = s.replace(/\[u\]([\s\S]+?)\[\/u\]/g, '<u>$1</u>');
+  s = s.replace(/\n/g, '<br>');
+  return s;
+}
+
+function renderMath(el) {
+  if (!el || !window.renderMathInElement) return;
+  try {
+    renderMathInElement(el, {
+      delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\[', right: '\\]', display: true }, { left: '\\(', right: '\\)', display: false }],
+      throwOnError: false
+    });
+  } catch (e) { }
+}
+
+/** Ambil media Drive melalui server (file tidak perlu dibagikan publik). */
+const MEDIA_CACHE = {};
+function hydrateMedia(root, loader) {
+  $$('[data-drive]', root).forEach(el => {
+    const ref = el.getAttribute('data-drive');
+    el.removeAttribute('data-drive');
+    const apply = url => { el.src = url; };
+    if (MEDIA_CACHE[ref]) return apply(MEDIA_CACHE[ref]);
+    el.classList.add('loading');
+    loader(ref).then(url => { MEDIA_CACHE[ref] = url; apply(url); el.classList.remove('loading'); })
+      .catch(e => { el.replaceWith(Object.assign(document.createElement('div'), { className: 'errs', textContent: 'Media gagal dimuat: ' + errMsg(e) })); });
+  });
+}
+
+function fmtClock(sec) {
+  sec = Math.max(0, Math.floor(sec));
+  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+  return [h, m, s].map(x => String(x).padStart(2, '0')).join(':');
+}
+
+function fileToB64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result).split(',')[1]);
+    r.onerror = () => rej(new Error('File tidak dapat dibaca.'));
+    r.readAsDataURL(file);
+  });
+}
+
+function beep() {
+  try {
+    const C = window.AudioContext || window.webkitAudioContext;
+    const ctx = beep.ctx || (beep.ctx = new C());
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.value = 880; o.connect(g); g.connect(ctx.destination);
+    g.gain.setValueAtTime(0.18, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+    o.start(); o.stop(ctx.currentTime + 0.36);
+  } catch (e) { }
+}
+
+function downloadText(name, text, mime) {
+  const blob = new Blob(['\ufeff' + text], { type: mime || 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+
+/* ---------- tab login ---------- */
+$$('.seg-b').forEach(b => b.addEventListener('click', () => {
+  $$('.seg-b').forEach(x => x.classList.toggle('on', x === b));
+  $('#f-siswa').classList.toggle('on', b.dataset.tab === 'siswa');
+  $('#f-staf').classList.toggle('on', b.dataset.tab === 'staf');
+}));
+</script>
+<script>
+/* ===================== RUANG UJIAN SISWA ===================== */
+const TIPE_LABEL = {
+  PG: 'Pilihan ganda', PG_KOMPLEKS: 'Pilihan ganda kompleks', BENAR_SALAH: 'Benar/salah per pernyataan', TF: 'Benar/salah',
+  TFNG: 'True / False / Not Given', YNNG: 'Yes / No / Not Given', ISIAN: 'Isian singkat', ESAI: 'Uraian',
+  MENJODOHKAN: 'Menjodohkan', URUTAN: 'Mengurutkan', SEBAB_AKIBAT: 'Sebab-akibat', ANALISIS: 'Analisis pernyataan', SPEAKING: 'Speaking'
+};
+const FIXED_TEXT = {
+  SEBAB_AKIBAT: ['Pernyataan benar, alasan benar, dan keduanya menunjukkan hubungan sebab-akibat',
+    'Pernyataan benar, alasan benar, tetapi keduanya tidak menunjukkan hubungan sebab-akibat',
+    'Pernyataan benar, alasan salah', 'Pernyataan salah, alasan benar', 'Pernyataan dan alasan keduanya salah'],
+  ANALISIS: ['(1), (2), dan (3) benar', '(1) dan (3) benar', '(2) dan (4) benar', 'Hanya (4) yang benar', 'Semua pernyataan benar']
+};
+const VLABEL = { COPY: 'copy/paste atau klik kanan', TAB: 'meninggalkan halaman ujian', FULLSCREEN: 'keluar dari layar penuh',
+  MULTITASK: 'multitasking / layar ganda', DEVTOOLS: 'membuka alat developer', LAIN: 'aktivitas terlarang' };
+const LETTERS = 'ABCDEFGHIJ';
+
+const S = {
+  guard: false, finished: false, locked: false, submitting: false, saving: false, dirty: false,
+  lastSave: 0, lastV: {}, vq: [], viol: 0, batasViol: 0, lastPesan: null, idx: 0, fs: 17,
+  winState: 'OK', winSince: 0, suspendFocusUntil: 0, recording: false
+};
+
+function deviceId() {
+  const k = 'cbt_dev_alittihad';
+  const gen = () => 'D' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+  try { let v = localStorage.getItem(k); if (!v) { v = gen(); localStorage.setItem(k, v); } return v; }
+  catch (e) {
+    try { let v = sessionStorage.getItem(k); if (!v) { v = gen(); sessionStorage.setItem(k, v); } return v; }
+    catch (e2) { return window.__dev || (window.__dev = gen()); }
+  }
+}
+const isFS = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+function requestFS() {
+  const el = document.documentElement;
+  const f = el.requestFullscreen || el.webkitRequestFullscreen;
+  if (!f) return Promise.reject(new Error('unsupported'));
+  try { const p = f.call(el, { navigationUI: 'hide' }); return p && p.then ? p : Promise.resolve(); }
+  catch (e) { return Promise.reject(e); }
+}
+function exitFS() { try { if (isFS()) (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) { } }
+const isSessionErr = e => /SESI_GANDA|SESI_HILANG/.test(String(e && e.message || e));
+const loadMedia = ref => MEDIA_CACHE[ref] ? Promise.resolve(MEDIA_CACHE[ref]) : api('stMedia', S.sid, S.tok, ref).then(u => (MEDIA_CACHE[ref] = u));
+const isAudio = ref => /#audio$/.test(ref || '') || /\.(mp3|wav|ogg|m4a|aac)(\?|$)/i.test(ref || '');
+
+/* ---------------- 1. LOGIN ---------------- */
+$('#in-token').addEventListener('input', e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); });
+$('#in-nisn').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, ''); });
+
+$('#btn-siswa').addEventListener('click', async () => {
+  const nisn = $('#in-nisn').value.trim(), code = $('#in-token').value.trim();
+  if (!nisn || !code) return toast('Isi NISN dan token ujian.', 'warn');
+  busy(true);
+  try {
+    const r = await api('studentLogin', nisn, code);
+    S.login = { nisn, code };
+    showConfirm(r);
+  } catch (e) { toast(errMsg(e), 'err', 6000); }
+  finally { busy(false); }
+});
+
+function showConfirm(r) {
+  S.examInfo = r.exam;
+  $('#cf-sekolah').textContent = r.sekolah + ' — ' + r.exam.kategori;
+  $('#cf-judul').textContent = r.exam.judul;
+  const rows = [
+    ['Nama', r.student.nama], ['NISN', r.student.nisn], ['Kelas', r.student.kelas], ['Mata pelajaran', r.exam.mapel || '-'],
+    ['Jumlah soal', r.jumlah_soal + ' soal'], ['Durasi', r.exam.durasi + ' menit' + (r.exam.selesai_jadwal ? ' (jadwal berakhir ' + r.exam.selesai_jadwal + ' WIB)' : '')]
+  ];
+  if (r.lanjut) rows.push(['Status', 'Melanjutkan ujian yang sudah dimulai. Waktu tetap berjalan sejak awal.']);
+  $('#cf-info').innerHTML = rows.map(x => `<dt>${esc(x[0])}</dt><dd>${esc(x[1])}</dd>`).join('');
+  $('#cf-rule-limit').textContent = r.exam.maks
+    ? `Batas pelanggaran ${r.exam.maks} kali. Setelah itu ujian ${r.exam.aksi === 'HENTIKAN' ? 'dihentikan otomatis dan dinilai apa adanya' : 'dikunci sampai pengawas membukanya'}.`
+    : 'Setiap pelanggaran dicatat dan dilaporkan langsung ke guru pengawas.';
+  $('#cf-agree').checked = false;
+  $('#cf-start').disabled = true;
+  $('#cf-start').textContent = r.lanjut ? 'Lanjutkan ujian' : 'Mulai ujian';
+  showView('v-confirm');
+}
+$('#cf-agree').addEventListener('change', e => { $('#cf-start').disabled = !e.target.checked; });
+$('#cf-back').addEventListener('click', () => showView('v-login'));
+
+$('#cf-start').addEventListener('click', async () => {
+  if (window.screen && screen.isExtended === true) {
+    modal({ title: 'Monitor kedua terdeteksi', body: '<p>Lepaskan monitor/proyektor tambahan terlebih dahulu, lalu tekan tombol mulai lagi.</p>' });
+    return;
+  }
+  const needFS = S.examInfo.wajib_fullscreen;
+  let fsOk = false;
+  if (needFS) { try { await requestFS(); fsOk = isFS(); } catch (e) { fsOk = false; } }
+  busy(true);
+  try {
+    const r = await api('studentStart', S.login.nisn, S.login.code, deviceId());
+    S.fsSupported = needFS && fsOk;
+    if (needFS && !fsOk) toast('Browser ini tidak mengizinkan layar penuh. Pengawasan lain tetap aktif.', 'warn', 6000);
+    enterExam(r);
+  } catch (e) {
+    exitFS();
+    toast(errMsg(e), 'err', 7000);
+  } finally { busy(false); }
+});
+
+/* ---------------- 2. MASUK UJIAN ---------------- */
+function enterExam(r) {
+  Object.assign(S, {
+    sid: r.sid, tok: r.tok, exam: r.exam, student: r.student, qs: r.questions, stim: r.stimuli || {},
+    ans: r.answers || {}, flags: r.flags || {}, lastPesan: r.packet.pesan || '', finished: false
+  });
+  S.flags.ragu = S.flags.ragu || {};
+  S.flags.played = S.flags.played || {};
+  S.fs = Number(S.flags.fs) || 17;
+  document.documentElement.style.setProperty('--fs', S.fs + 'px');
+  $('#x-judul').textContent = r.exam.judul;
+  $('#x-siswa').textContent = r.student.nama + ' / ' + r.student.nisn + ' / ' + r.student.kelas;
+  watermark(r.student.nama + '  ' + r.student.nisn);
+  buildGrid();
+  let start = Number(S.flags.pos);
+  if (!(start >= 0 && start < S.qs.length)) {
+    start = S.qs.findIndex(q => !answered(S.ans[q.id]));
+    if (start < 0) start = 0;
+  }
+  S.idx = start;
+  showView('v-exam');
+  renderQ();
+  syncTime(r.packet.sisa);
+  handlePacket(r.packet);
+  startLoops();
+  setTimeout(armGuard, 1800);
+  if (r.resumed) toast('Ujian dilanjutkan. Masuk ulang tercatat di laporan pengawas.', 'warn', 6000);
+}
+
+function watermark(txt) {
+  const t = String(txt).replace(/[<&>]/g, '');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="380" height="220"><text x="10" y="130" transform="rotate(-24 190 110)" font-family="sans-serif" font-size="17" font-weight="700" fill="#1C2A27">${t}</text></svg>`;
+  $('#wm').style.backgroundImage = `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}")`;
+}
+
+/* ---------------- 3. NAVIGASI & LJK ---------------- */
+function answered(v) {
+  if (v === null || v === undefined || v === '') return false;
+  if (Array.isArray(v)) return v.some(x => x !== null && x !== undefined && x !== '');
+  if (typeof v === 'object') return !!v.rec || Object.keys(v).some(k => v[k] !== null && v[k] !== '' && v[k] !== undefined);
+  return String(v).trim() !== '';
+}
+
+function buildGrid() {
+  const g = $('#x-grid');
+  let html = '', sec = null;
+  const multiSec = new Set(S.qs.map(q => q.section)).size > 1;
+  S.qs.forEach((q, i) => {
+    if (multiSec && q.section !== sec) { sec = q.section; html += `<div class="ljk-sec">${esc(sec)}</div>`; }
+    html += `<button class="bub" data-i="${i}" aria-label="Soal ${i + 1}">${i + 1}</button>`;
+  });
+  g.innerHTML = html;
+  $$('.bub', g).forEach(b => b.addEventListener('click', () => go(Number(b.dataset.i))));
+}
+
+function updateGrid() {
+  let n = 0;
+  $$('#x-grid .bub').forEach(b => {
+    const i = Number(b.dataset.i), q = S.qs[i];
+    const a = answered(S.ans[q.id]);
+    if (a) n++;
+    b.classList.toggle('ans', a);
+    b.classList.toggle('flag', !!S.flags.ragu[q.id]);
+    b.classList.toggle('cur', i === S.idx);
+    b.disabled = !S.exam.izinkan_kembali && i < S.idx;
+  });
+  $('#x-count').textContent = n + '/' + S.qs.length;
+}
+
+function go(i) {
+  if (i < 0 || i >= S.qs.length || i === S.idx) return;
+  if (S.recording) return toast('Selesaikan rekaman terlebih dahulu.', 'warn');
+  if (!S.exam.izinkan_kembali && i < S.idx) return toast('Ujian ini tidak mengizinkan kembali ke soal sebelumnya.', 'warn');
+  const cur = S.qs[S.idx];
+  if (!S.exam.izinkan_kembali && !answered(S.ans[cur.id]) && i > S.idx) {
+    confirmBox('Soal nomor ' + (S.idx + 1) + ' belum dijawab dan tidak dapat dibuka lagi. Tetap lanjut?', 'Lanjut').then(ok => { if (ok) doGo(i); });
+    return;
+  }
+  doGo(i);
+}
+function doGo(i) {
+  const st = $('.stim', $('#x-pane'));
+  S.stimScroll = { key: S.qs[S.idx].stim, top: st ? st.scrollTop : 0 };
+  S.idx = i;
+  S.flags.pos = i;
+  S.dirty = true;
+  renderQ();
+}
+$('#x-prev').addEventListener('click', () => go(S.idx - 1));
+$('#x-next').addEventListener('click', () => go(S.idx + 1));
+$('#x-flag').addEventListener('change', e => {
+  const q = S.qs[S.idx];
+  if (e.target.checked) S.flags.ragu[q.id] = 1; else delete S.flags.ragu[q.id];
+  S.dirty = true;
+  updateGrid();
+});
+$('#x-font-up').addEventListener('click', () => setFont(2));
+$('#x-font-dn').addEventListener('click', () => setFont(-2));
+function setFont(d) {
+  S.fs = Math.max(14, Math.min(26, S.fs + d));
+  S.flags.fs = S.fs;
+  document.documentElement.style.setProperty('--fs', S.fs + 'px');
+}
+
+/* ---------------- 4. RENDER SOAL ---------------- */
+function renderQ() {
+  const q = S.qs[S.idx];
+  const st = q.stim && S.stim[q.stim];
+  const pane = $('#x-pane');
+  const qMedia = q.media && !isAudio(q.media) ? `<div class="qmedia">${mediaTag(q.media)}</div>` : '';
+  const body = `<div class="qbody">
+      <div class="qhead"><span class="qno">${S.idx + 1}</span><span class="qmeta">${esc(q.section)} / ${esc(TIPE_LABEL[q.tipe] || q.tipe)}${q.bobot !== 1 ? ' / bobot ' + q.bobot : ''}</span></div>
+      ${qMedia}<div class="qtext">${rich(q.teks)}</div><div id="q-ans"></div></div>`;
+  const showStim = st && (String(st.teks).trim() || (st.media && !isAudio(st.media)));
+  pane.innerHTML = showStim
+    ? `<div class="split"><article class="stim">${st.judul ? `<h4>${esc(st.judul)}</h4>` : ''}${st.media && !isAudio(st.media) ? mediaTag(st.media) : ''}<div class="txt">${rich(st.teks)}</div></article>${body}</div>`
+    : body;
+  renderAnswer(q, $('#q-ans'));
+  hydrateMedia(pane, loadMedia);
+  renderMath(pane);
+  pane.scrollTop = 0;
+  const stEl = $('.stim', pane);
+  if (stEl && S.stimScroll && S.stimScroll.key === q.stim) stEl.scrollTop = S.stimScroll.top;
+  $('#x-flag').checked = !!S.flags.ragu[q.id];
+  $('#x-prev').disabled = S.idx === 0 || !S.exam.izinkan_kembali;
+  $('#x-next').disabled = S.idx === S.qs.length - 1;
+  updateGrid();
+  updateDock(q);
+}
+
+function setAns(id, v) {
+  S.ans[id] = v;
+  S.dirty = true;
+  setSave('busy', 'Belum tersimpan');
+  updateGrid();
+}
+
+function choiceList(q) {
+  if (q.tipe === 'PG') {
+    const order = q.urut || Object.keys(q.opsi).sort();
+    return order.map((L, i) => ({ val: L, letter: LETTERS[i], html: rich(q.opsi[L]) }));
+  }
+  if (q.tipe === 'SEBAB_AKIBAT' || q.tipe === 'ANALISIS') return FIXED_TEXT[q.tipe].map((t, i) => ({ val: LETTERS[i], letter: LETTERS[i], html: esc(t) }));
+  if (q.tipe === 'TF') {
+    const lab = String((q.set && q.set.label) || 'True/False').split('/');
+    return [{ val: 'TRUE', letter: 'A', html: esc(lab[0] || 'True') }, { val: 'FALSE', letter: 'B', html: esc(lab[1] || 'False') }];
+  }
+  if (q.tipe === 'TFNG') return ['TRUE', 'FALSE', 'NOT GIVEN'].map((v, i) => ({ val: v, letter: LETTERS[i], html: v }));
+  if (q.tipe === 'YNNG') return ['YES', 'NO', 'NOT GIVEN'].map((v, i) => ({ val: v, letter: LETTERS[i], html: v }));
+  return [];
+}
+
+function renderAnswer(q, box) {
+  const a = S.ans[q.id];
+  const o = q.opsi || {};
+  switch (q.tipe) {
+    case 'PG': case 'SEBAB_AKIBAT': case 'ANALISIS': case 'TF': case 'TFNG': case 'YNNG': {
+      let pre = '';
+      if (q.tipe === 'SEBAB_AKIBAT') pre = `<div class="sab"><div class="box">${rich(o.pernyataan)}</div><div class="sebab">SEBAB</div><div class="box">${rich(o.alasan)}</div></div>`;
+      if (q.tipe === 'ANALISIS' && o.pernyataan && o.pernyataan.length) pre = `<div class="box">${o.pernyataan.map((p, i) => `(${i + 1}) ${rich(p)}`).join('<br>')}</div>`;
+      const list = choiceList(q);
+      box.innerHTML = pre + `<div class="opts" role="radiogroup">${list.map(x =>
+        `<label class="opt ${a === x.val ? 'sel' : ''}"><input type="radio" name="r1" value="${esc(x.val)}" ${a === x.val ? 'checked' : ''}><span class="L">${x.letter}</span><span>${x.html}</span></label>`).join('')}</div>`;
+      $$('input', box).forEach(inp => inp.addEventListener('change', () => {
+        $$('.opt', box).forEach(l => l.classList.toggle('sel', $('input', l).checked));
+        setAns(q.id, inp.value);
+      }));
+      break;
+    }
+    case 'PG_KOMPLEKS': {
+      const order = q.urut || Object.keys(o).sort();
+      const sel = Array.isArray(a) ? a : [];
+      const n = (q.set && q.set.pilih) || 0;
+      box.innerHTML = (n ? `<span class="pill-hint">Pilih ${n} jawaban benar</span>` : `<span class="pill-hint">Pilih semua jawaban yang benar</span>`) +
+        `<div class="opts">${order.map((L, i) => `<label class="opt chk ${sel.includes(L) ? 'sel' : ''}"><input type="checkbox" value="${L}" ${sel.includes(L) ? 'checked' : ''}><span class="L">${LETTERS[i]}</span><span>${rich(o[L])}</span></label>`).join('')}</div>`;
+      $$('input', box).forEach(inp => inp.addEventListener('change', () => {
+        const v = $$('input', box).filter(x => x.checked).map(x => x.value).sort();
+        $$('.opt', box).forEach(l => l.classList.toggle('sel', $('input', l).checked));
+        setAns(q.id, v);
+      }));
+      break;
+    }
+    case 'BENAR_SALAH': {
+      const st = o.pernyataan || [], lab = o.label || ['Benar', 'Salah'];
+      const cur = Array.isArray(a) ? a.slice() : new Array(st.length).fill('');
+      box.innerHTML = `<table class="bs-table"><thead><tr><th>Pernyataan</th><th class="c">${esc(lab[0])}</th><th class="c">${esc(lab[1])}</th></tr></thead><tbody>${st.map((p, i) =>
+        `<tr><td>${rich(p)}</td><td class="c"><input type="radio" name="bs${i}" value="B" ${cur[i] === 'B' ? 'checked' : ''} aria-label="${esc(lab[0])}"></td><td class="c"><input type="radio" name="bs${i}" value="S" ${cur[i] === 'S' ? 'checked' : ''} aria-label="${esc(lab[1])}"></td></tr>`).join('')}</tbody></table>`;
+      $$('input', box).forEach(inp => inp.addEventListener('change', () => {
+        const i = Number(inp.name.slice(2));
+        cur[i] = inp.value;
+        setAns(q.id, cur.slice());
+      }));
+      break;
+    }
+    case 'MENJODOHKAN': {
+      const kiri = o.kiri || [], kanan = o.kanan || {};
+      const cur = (a && typeof a === 'object') ? Object.assign({}, a) : {};
+      const opts = Object.keys(kanan).map(L => `<option value="${L}">${L}. ${esc(String(kanan[L]).replace(/\*\*|\[\/?u\]/g, '').slice(0, 70))}</option>`).join('');
+      box.innerHTML = `<div class="box">${Object.keys(kanan).map(L => `<b>${L}.</b> ${rich(kanan[L])}`).join('<br>')}</div>` +
+        kiri.map((k, i) => `<div class="match-row"><b>${i + 1}.</b><span>${rich(k)}</span><select class="in" data-i="${i}"><option value="">Pilih</option>${opts}</select></div>`).join('');
+      $$('select', box).forEach(s => {
+        s.value = cur[s.dataset.i] || '';
+        s.addEventListener('change', () => { cur[s.dataset.i] = s.value; setAns(q.id, Object.assign({}, cur)); });
+      });
+      break;
+    }
+    case 'URUTAN': {
+      const items = o.item || [];
+      const cur = (a && typeof a === 'object') ? Object.assign({}, a) : {};
+      const nums = items.map((_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('');
+      box.innerHTML = `<p class="muted small">Beri nomor urut 1 sampai ${items.length} pada setiap bagian.</p>` +
+        items.map((t, i) => `<div class="match-row"><b>${String.fromCharCode(97 + i)}.</b><span>${rich(t)}</span><select class="in" data-i="${i}"><option value="">Urutan</option>${nums}</select></div>`).join('') +
+        `<div id="ur-warn" class="errs" hidden>Ada nomor urut yang dipakai lebih dari sekali.</div>`;
+      const check = () => {
+        const v = Object.values(cur).filter(Boolean);
+        $('#ur-warn', box).hidden = new Set(v).size === v.length;
+      };
+      $$('select', box).forEach(s => {
+        s.value = cur[s.dataset.i] || '';
+        s.addEventListener('change', () => { cur[s.dataset.i] = s.value ? Number(s.value) : ''; check(); setAns(q.id, Object.assign({}, cur)); });
+      });
+      check();
+      break;
+    }
+    case 'ISIAN': {
+      box.innerHTML = `<input class="ans-in" id="is-in" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="Tulis jawaban singkat" maxlength="200">
+        <p class="muted small">Angka desimal boleh memakai titik atau koma. Pecahan ditulis seperti 3/4.</p>`;
+      const inp = $('#is-in', box);
+      inp.value = a || '';
+      let t;
+      inp.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => setAns(q.id, inp.value.trim()), 350); });
+      inp.addEventListener('blur', () => setAns(q.id, inp.value.trim()));
+      break;
+    }
+    case 'ESAI': {
+      const min = (q.set && q.set.min_kata) || 0;
+      box.innerHTML = `<textarea class="ans-in" id="es-in" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="Tulis jawaban Anda di sini"></textarea><div class="wc" id="es-wc"></div>`;
+      const ta = $('#es-in', box), wc = $('#es-wc', box);
+      ta.value = a || '';
+      const count = () => {
+        const n = (ta.value.trim().match(/\S+/g) || []).length;
+        wc.textContent = n + ' kata' + (min ? ' (minimal ' + min + ')' : '');
+        wc.classList.toggle('ok', !min || n >= min);
+      };
+      count();
+      let t;
+      ta.addEventListener('input', () => { count(); clearTimeout(t); t = setTimeout(() => setAns(q.id, ta.value), 600); });
+      ta.addEventListener('blur', () => setAns(q.id, ta.value));
+      break;
+    }
+    case 'SPEAKING':
+      renderSpeaking(q, box);
+      break;
+    default:
+      box.innerHTML = '<div class="errs">Tipe soal tidak dikenal.</div>';
+  }
+}
+
+/* ---------------- 5. AUDIO DOCK (tidak berhenti saat pindah soal) ---------------- */
+function dockAudioFor(q) {
+  const st = q.stim && S.stim[q.stim];
+  const once = !!(q.set && q.set.putar_sekali);
+  if (st && isAudio(st.media)) return { key: 's:' + q.stim, ref: st.media, once, label: st.judul || 'Audio' };
+  if (isAudio(q.media)) return { key: 'q:' + q.id, ref: q.media, once, label: 'Audio soal nomor ' + (S.idx + 1) };
+  return null;
+}
+
+function updateDock(q) {
+  const a = dockAudioFor(q), dock = $('#x-dock');
+  if (!a) {
+    if (S.dockEl && !S.dockEl.paused && !S.dockEl.ended) return;
+    dock.hidden = true; dock.innerHTML = ''; S.dockKey = null; S.dockEl = null;
+    return;
+  }
+  if (a.key === S.dockKey) return;
+  if (S.dockEl) { try { S.dockEl.pause(); } catch (e) { } }
+  S.dockKey = a.key;
+  dock.hidden = false;
+  if (a.once && S.flags.played[a.key]) {
+    dock.innerHTML = `<strong>${esc(a.label)}</strong><span class="muted">Audio ini hanya dapat diputar satu kali dan sudah diputar.</span>`;
+    S.dockEl = null;
+    return;
+  }
+  dock.innerHTML = a.once
+    ? `<strong>${esc(a.label)}</strong><button class="btn sm pri" id="dk-play" disabled>Memuat audio…</button><span id="dk-t" class="muted small">Hanya dapat diputar satu kali, tanpa jeda.</span><audio id="dk-a" preload="auto"></audio>`
+    : `<strong>${esc(a.label)}</strong><audio id="dk-a" controls controlsList="nodownload noplaybackrate" preload="auto"></audio>`;
+  const el = $('#dk-a');
+  S.dockEl = el;
+  el.addEventListener('contextmenu', e => e.preventDefault());
+  loadMedia(a.ref).then(url => {
+    if (S.dockEl !== el) return;
+    el.src = url;
+    const b = $('#dk-play');
+    if (!b) return;
+    b.disabled = false;
+    b.textContent = 'Putar audio';
+    b.onclick = () => {
+      b.disabled = true;
+      el.play().then(() => {
+        S.flags.played[a.key] = 1;
+        S.dirty = true;
+        save(true);
+        b.textContent = 'Sedang diputar';
+      }).catch(() => { b.disabled = false; toast('Audio gagal diputar. Coba tekan lagi.', 'err'); });
+    };
+    el.ontimeupdate = () => { const t = $('#dk-t'); if (t) t.textContent = fmtClock(el.currentTime).slice(3) + ' / ' + fmtClock(el.duration || 0).slice(3); };
+    el.onended = () => { b.textContent = 'Selesai diputar'; };
+  }).catch(e => { dock.innerHTML = `<span class="errs">Audio gagal dimuat: ${esc(errMsg(e))}. Beri tahu pengawas.</span>`; });
+}
+
+/* ---------------- 6. SPEAKING ---------------- */
+function renderSpeaking(q, box) {
+  const a = S.ans[q.id], set = q.set || {};
+  if (a && a.rec) {
+    box.innerHTML = `<div class="oklist">Rekaman terkirim (${a.durasi || '?'} detik). Rekaman hanya dapat dibuat satu kali.</div>`;
+    return;
+  }
+  box.innerHTML = `<div class="rec"><button class="btn pri" id="sp-go">Mulai persiapan ${set.persiapan || 60} detik</button>
+    <span class="muted small">Setelah persiapan, perekaman berjalan otomatis maksimal ${set.durasi_bicara || 120} detik.</span></div><div id="sp-st" class="rec"></div>`;
+  $('#sp-go', box).onclick = () => speakFlow(q, box);
+}
+
+async function speakFlow(q, box) {
+  const set = q.set || {}, stat = $('#sp-st', box);
+  const failMsg = m => { stat.innerHTML = `<div class="errs">${m} Beri tahu pengawas; bagian Speaking dapat dinilai langsung oleh guru.</div>`; S.recording = false; };
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) return failMsg('Perangkat ini tidak mendukung perekaman suara.');
+  S.suspendFocusUntil = Date.now() + 12000;
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch (e) { return failMsg('Akses mikrofon ditolak atau diblokir browser.'); }
+  S.recording = true;
+  $('#sp-go', box).remove();
+  let left = set.persiapan || 60;
+  stat.innerHTML = `<span>Persiapan</span><span class="big" id="sp-c">${left}</span><button class="btn sm ghost" id="sp-skip">Mulai bicara sekarang</button>`;
+  await new Promise(res => {
+    const t = setInterval(() => { left--; const c = $('#sp-c', stat); if (c) c.textContent = left; if (left <= 0) { clearInterval(t); res(); } }, 1000);
+    $('#sp-skip', stat).onclick = () => { clearInterval(t); res(); };
+  });
+  const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'].find(m => MediaRecorder.isTypeSupported(m)) || '';
+  const rec = new MediaRecorder(stream, mime ? { mimeType: mime, audioBitsPerSecond: 32000 } : undefined);
+  const chunks = [];
+  rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  let dur = 0, max = set.durasi_bicara || 120;
+  stat.innerHTML = `<span class="dot"></span><span>Merekam</span><span class="big" id="sp-c">0</span><span class="muted">/ ${max} detik</span><button class="btn sm warn" id="sp-stop">Selesai bicara</button>`;
+  rec.start(1000);
+  await new Promise(res => {
+    const t = setInterval(() => { dur++; const c = $('#sp-c', stat); if (c) c.textContent = dur; if (dur >= max) { clearInterval(t); res(); } }, 1000);
+    $('#sp-stop', stat).onclick = () => { clearInterval(t); res(); };
+  });
+  await new Promise(res => { rec.onstop = res; rec.stop(); });
+  stream.getTracks().forEach(t => t.stop());
+  stat.innerHTML = '<span>Mengirim rekaman…</span>';
+  const blob = new Blob(chunks, { type: rec.mimeType || 'audio/webm' });
+  const b64 = await new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.readAsDataURL(blob); });
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      const r = await api('stUploadSpeaking', S.sid, S.tok, q.id, b64, blob.type);
+      setAns(q.id, { rec: r.ref, durasi: dur });
+      S.recording = false;
+      save(true);
+      renderSpeaking(q, box);
+      return;
+    } catch (e) {
+      if (attempt === 4) return failMsg('Rekaman gagal dikirim (' + errMsg(e) + ').');
+      stat.innerHTML = `<span>Gagal mengirim, mencoba lagi (${attempt}/3)…</span>`;
+      await new Promise(r => setTimeout(r, 3000));
+    }
+  }
+}
+
+/* ---------------- 7. WAKTU, SIMPAN, PAKET STATUS ---------------- */
+function syncTime(sisa) { S.deadline = Date.now() + Number(sisa) * 1000; }
+
+function setSave(cls, txt) {
+  const el = $('#x-save');
+  el.className = 'savestate ' + (cls || '');
+  el.textContent = txt;
+}
+
+function startLoops() {
+  clearInterval(S.tickT); clearTimeout(S.saveT); clearInterval(S.winT);
+  S.warned5 = false;
+  S.tickT = setInterval(() => {
+    if (S.finished) return;
+    const s = (S.deadline - Date.now()) / 1000;
+    const c = $('#x-clock');
+    c.textContent = fmtClock(s);
+    c.classList.toggle('low', s < 300);
+    if (s < 300 && !S.warned5) { S.warned5 = true; toast('Sisa waktu kurang dari 5 menit.', 'warn', 6000); }
+    if (s <= 0 && !S.submitting) submitNow(true);
+  }, 500);
+  const loop = () => {
+    S.saveT = setTimeout(async () => { await save(false); if (!S.finished) loop(); }, S.locked ? 5000 : 10000 + Math.random() * 5000);
+  };
+  loop();
+  S.winT = setInterval(checkWindow, 4000);
+}
+
+async function save(force) {
+  if (S.saving || S.finished) return;
+  if (!force && !S.dirty && Date.now() - S.lastSave < 25000 && !S.locked) return;
+  S.saving = true;
+  const was = S.dirty;
+  S.dirty = false;
+  setSave('busy', 'Menyimpan…');
+  try {
+    const p = await api('stSave', S.sid, S.tok, S.ans, S.flags);
+    S.lastSave = Date.now();
+    const d = new Date();
+    setSave('', 'Tersimpan ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'));
+    handlePacket(p);
+    await flushViol();
+  } catch (e) {
+    S.dirty = S.dirty || was;
+    if (isSessionErr(e)) return sessionKilled(e);
+    setSave('err', 'Offline, mencoba lagi');
+  } finally { S.saving = false; }
+}
+
+async function flushViol() {
+  while (S.vq.length && !S.finished) {
+    const j = S.vq[0];
+    try { handlePacket(await api('stViolation', S.sid, S.tok, j[0], j[1] + ' (terkirim tertunda)')); S.vq.shift(); }
+    catch (e) { break; }
+  }
+}
+
+function handlePacket(p) {
+  if (!p || S.finished) return;
+  if (typeof p.sisa === 'number') syncTime(p.sisa);
+  S.viol = p.viol || 0;
+  S.batasViol = p.batas_viol || 0;
+  updateViolMeter();
+  if (p.pesan && p.pesan !== S.lastPesan) {
+    S.lastPesan = p.pesan;
+    const txt = p.pesan.split('|').slice(1).join('|');
+    if (txt) modal({ title: 'Pesan dari pengawas', body: `<p>${esc(txt)}</p>`, actions: [{ label: 'Mengerti', cls: 'pri' }] });
+  }
+  if (['SELESAI', 'DIHENTIKAN', 'DINILAI'].includes(p.status)) return finish(p);
+  showLock(p.status === 'TERKUNCI');
+}
+
+function updateViolMeter() {
+  const m = $('#x-viol');
+  $('b', m).textContent = S.batasViol ? S.viol + '/' + S.batasViol : S.viol;
+  m.classList.toggle('hot', S.viol > 0);
+  m.classList.toggle('max', S.batasViol && S.viol >= S.batasViol - 1);
+}
+
+function showLock(on) {
+  if (on === S.locked) return;
+  S.locked = on;
+  $('#ov-lock').hidden = !on;
+  $('#ov-lock-info').textContent = on ? 'Pelanggaran tercatat: ' + S.viol + (S.batasViol ? ' dari batas ' + S.batasViol : '') : '';
+  if (!on) {
+    toast('Kunci dibuka pengawas. Lanjutkan ujian dengan tertib.', 'ok');
+    if (S.fsSupported && !isFS()) $('#ov-fs').hidden = false;
+  }
+}
+
+/* ---------------- 8. KUMPULKAN & SELESAI ---------------- */
+$('#x-submit').addEventListener('click', () => {
+  if (S.recording) return toast('Selesaikan rekaman terlebih dahulu.', 'warn');
+  const n = S.qs.length;
+  const ans = S.qs.filter(q => answered(S.ans[q.id])).length;
+  const ragu = Object.keys(S.flags.ragu).length;
+  const kosong = n - ans;
+  modal({
+    title: 'Kumpulkan jawaban?',
+    body: `<p>Terjawab <b>${ans}</b> dari ${n} soal.${kosong ? ` Masih ada <b>${kosong}</b> soal kosong.` : ''}${ragu ? ` <b>${ragu}</b> soal ditandai ragu-ragu.` : ''}</p>
+      <p>Setelah dikumpulkan, jawaban tidak dapat diubah lagi.</p>
+      <label class="check"><input type="checkbox" id="sb-ok"> Saya yakin mengumpulkan sekarang.</label>`,
+    actions: [{ label: 'Periksa lagi', cls: 'ghost' }, {
+      label: 'Kumpulkan', cls: 'pri', onClick: async (c, box) => {
+        if (!$('#sb-ok', box).checked) { toast('Centang konfirmasi terlebih dahulu.', 'warn'); return false; }
+        await submitNow(false);
+      }
+    }]
+  });
+});
+
+async function submitNow(auto) {
+  if (S.submitting || S.finished) return;
+  S.submitting = true;
+  if (auto) toast('Waktu habis. Jawaban dikumpulkan otomatis.', 'warn', 8000);
+  busy(true);
+  for (let attempt = 0; attempt < 30 && !S.finished; attempt++) {
+    try {
+      const p = await api('stSubmit', S.sid, S.tok, S.ans, S.flags);
+      busy(false);
+      return finish(p);
+    } catch (e) {
+      if (isSessionErr(e)) { busy(false); return sessionKilled(e); }
+      if (!auto && /dikunci/i.test(errMsg(e))) { busy(false); S.submitting = false; return toast(errMsg(e), 'err'); }
+      setSave('err', 'Gagal mengirim, mencoba lagi');
+      await new Promise(r => setTimeout(r, 4000));
+    }
+  }
+  busy(false);
+  S.submitting = false;
+  toast('Jawaban belum terkirim. Periksa koneksi lalu tekan Kumpulkan lagi.', 'err', 8000);
+}
+
+function stopAll() {
+  S.finished = true;
+  S.guard = false;
+  clearInterval(S.tickT); clearTimeout(S.saveT); clearInterval(S.winT);
+  if (S.dockEl) { try { S.dockEl.pause(); } catch (e) { } }
+  $('#ov-lock').hidden = true; $('#ov-fs').hidden = true; $('#ov-warn').hidden = true; $('#modal').hidden = true;
+  exitFS();
+}
+
+function finish(p) {
+  if (S.finished && $('#v-done').classList.contains('on')) return;
+  stopAll();
+  const stopped = p && p.status === 'DIHENTIKAN';
+  $('#d-title').textContent = stopped ? 'Ujian dihentikan' : 'Jawaban terkumpul';
+  $('#d-msg').textContent = stopped
+    ? 'Ujian dihentikan karena pelanggaran atau oleh pengawas. Jawaban yang sudah tersimpan tetap dinilai.'
+    : 'Terima kasih, ' + S.student.nama + '. Jawaban Anda sudah diterima server.';
+  const sc = $('#d-score');
+  if (p && p.nilai !== null && p.nilai !== undefined && p.nilai !== '') { sc.hidden = false; sc.textContent = Number(p.nilai).toLocaleString('id-ID'); }
+  else sc.hidden = true;
+  showView('v-done');
+}
+
+function sessionKilled(e) {
+  stopAll();
+  $('#d-title').textContent = 'Sesi ujian berakhir di perangkat ini';
+  $('#d-msg').textContent = errMsg(e) + ' Hubungi pengawas bila ini tidak disengaja.';
+  $('#d-score').hidden = true;
+  showView('v-done');
+}
+
+/* ---------------- 9. PENGAWASAN ANTI-KECURANGAN ---------------- */
+function armGuard() {
+  if (S.finished) return;
+  S.guard = true;
+  S.mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) && matchMedia('(pointer:coarse)').matches;
+  S.dpr = window.devicePixelRatio;
+  S.r0 = window.outerWidth && window.innerWidth ? window.outerWidth / window.innerWidth : 1;
+  if (S.fsSupported && !isFS()) { violate('FULLSCREEN', 'Tidak dalam layar penuh saat ujian dimulai'); $('#ov-fs').hidden = false; }
+  checkWindow();
+}
+
+function violate(type, detail) {
+  if (!S.guard || S.finished || S.locked) return;
+  const now = Date.now();
+  const grp = ['TAB', 'MULTITASK', 'FULLSCREEN'].includes(type) ? 'focus' : type;
+  if (grp === 'focus' && now < S.suspendFocusUntil) return;
+  if (S.lastV[grp] && now - S.lastV[grp] < 3000) return;
+  S.lastV[grp] = now;
+  S.viol++;
+  updateViolMeter();
+  const bar = $('#ov-warn');
+  bar.textContent = 'Pelanggaran tercatat: ' + (VLABEL[type] || type) + '.' + (S.batasViol ? ' (' + S.viol + ' dari batas ' + S.batasViol + ')' : '') + ' Guru pengawas menerima laporan ini.';
+  bar.hidden = false;
+  clearTimeout(S.warnT);
+  S.warnT = setTimeout(() => { bar.hidden = true; }, 5000);
+  api('stViolation', S.sid, S.tok, type, detail).then(handlePacket).catch(e => {
+    if (isSessionErr(e)) return sessionKilled(e);
+    S.vq.push([type, detail]);
+  });
+}
+
+const inField = t => t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable);
+const examOn = () => $('#v-exam').classList.contains('on') && !S.finished;
+
+['copy', 'cut', 'paste'].forEach(ev => document.addEventListener(ev, e => {
+  if (!examOn()) return;
+  e.preventDefault();
+  violate('COPY', { copy: 'Mencoba menyalin (copy)', cut: 'Mencoba memotong (cut)', paste: 'Mencoba menempel (paste)' }[ev]);
+}, true));
+document.addEventListener('contextmenu', e => { if (!examOn()) return; e.preventDefault(); violate('COPY', 'Klik kanan / tekan lama'); }, true);
+document.addEventListener('selectstart', e => { if (examOn() && !inField(e.target)) e.preventDefault(); }, true);
+document.addEventListener('dragstart', e => { if (examOn()) e.preventDefault(); }, true);
+document.addEventListener('drop', e => { if (!examOn()) return; e.preventDefault(); violate('COPY', 'Mencoba menjatuhkan teks/berkas (drag & drop)'); }, true);
+
+document.addEventListener('keydown', e => {
+  if (!examOn()) return;
+  const k = String(e.key || '').toLowerCase();
+  const ctrl = e.ctrlKey || e.metaKey;
+  const combo = (e.ctrlKey ? 'Ctrl+' : '') + (e.metaKey ? 'Cmd+' : '') + (e.altKey ? 'Alt+' : '') + (e.shiftKey ? 'Shift+' : '') + (e.key || '');
+  if (k === 'f12' || (ctrl && e.shiftKey && ['i', 'j', 'c', 'k'].includes(k)) || (e.metaKey && e.altKey && ['i', 'j', 'c', 'u'].includes(k)) || (ctrl && k === 'u')) {
+    e.preventDefault(); e.stopPropagation(); violate('DEVTOOLS', 'Pintasan developer: ' + combo);
+  } else if ((ctrl && ['c', 'v', 'x'].includes(k)) || (e.shiftKey && k === 'insert') || (ctrl && k === 'insert')) {
+    e.preventDefault(); violate('COPY', 'Pintasan salin/tempel: ' + combo);
+  } else if (ctrl && ['p', 's'].includes(k)) {
+    e.preventDefault(); violate('LAIN', 'Mencoba mencetak/menyimpan halaman: ' + combo);
+  } else if (ctrl && ['a', 'f', 'g', 'h', 'o', 'j', 'd', 'e', 'l', 'k'].includes(k) && !(k === 'a' && inField(e.target))) {
+    e.preventDefault();
+  } else if (k === 'f5' || (ctrl && k === 'r') || k === 'f11' || (e.altKey && ['arrowleft', 'arrowright', 'home'].includes(k)) || k === 'contextmenu') {
+    e.preventDefault();
+  }
+}, true);
+document.addEventListener('keyup', e => {
+  if (!examOn()) return;
+  if (String(e.key).toLowerCase() === 'printscreen') {
+    violate('LAIN', 'Menekan tombol Print Screen (tangkapan layar)');
+    try { navigator.clipboard.writeText(' '); } catch (x) { }
+  }
+}, true);
+window.addEventListener('beforeprint', () => { if (examOn()) violate('LAIN', 'Mencoba mencetak halaman'); });
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && examOn()) violate('TAB', 'Meninggalkan halaman ujian (pindah tab, membuka aplikasi lain, atau layar dikunci)');
+});
+window.addEventListener('blur', () => {
+  if (!examOn()) return;
+  setTimeout(() => {
+    if (examOn() && !document.hidden && !document.hasFocus()) violate('MULTITASK', 'Fokus berpindah ke jendela/aplikasi lain (mis. jendela mengambang atau layar lain)');
+  }, 450);
+});
+['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
+  if (!examOn()) return;
+  if (isFS()) { $('#ov-fs').hidden = true; return; }
+  if (S.fsSupported && S.exam && S.exam.wajib_fullscreen) {
+    violate('FULLSCREEN', 'Keluar dari mode layar penuh');
+    $('#ov-fs').hidden = false;
+  }
+}));
+$('#ov-fs-btn').addEventListener('click', () => {
+  requestFS().then(() => { $('#ov-fs').hidden = true; }).catch(() => toast('Layar penuh ditolak browser. Panggil pengawas.', 'err'));
+});
+let resizeT;
+window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(checkWindow, 800); });
+
+function checkWindow() {
+  if (!S.guard || S.finished || S.mobile) return;
+  if (window.devicePixelRatio !== S.dpr) {
+    // Zoom berubah: perbarui patokan, jangan dianggap pelanggaran
+    S.dpr = window.devicePixelRatio;
+    S.r0 = window.outerWidth / window.innerWidth;
+    return;
+  }
+  let st = 'OK';
+  const expected = window.outerWidth / (S.r0 || 1);
+  if (expected - window.innerWidth > 220) st = 'DEV';
+  else if (window.outerWidth < screen.availWidth * 0.72) st = 'SMALL';
+  const now = Date.now();
+  if (st !== 'OK' && (st !== S.winState || now - S.winSince > 30000)) {
+    S.winSince = now;
+    if (st === 'DEV') violate('DEVTOOLS', 'Area tampilan menyusut: kemungkinan panel Inspect/DevTools terbuka');
+    else violate('MULTITASK', 'Jendela diperkecil atau layar dibagi (split screen)');
+  }
+  S.winState = st;
+  if (window.screen && screen.isExtended === true && (!S.extAt || now - S.extAt > 60000)) {
+    S.extAt = now;
+    violate('MULTITASK', 'Monitor/layar tambahan terhubung (layar ganda)');
+  }
+}
+
+window.addEventListener('beforeunload', e => {
+  if (S.guard && !S.finished) { e.preventDefault(); e.returnValue = ''; return ''; }
+});
+</script>
+<script>
+/* ===================== DASBOR GURU / ADMIN / PENGAWAS ===================== */
+const A = { token: null, user: null, kategori: [], view: '', exams: null, since: 0, pollT: null, monT: null, badge: 0, classes: [] };
+const PRESET_DURASI = { 'IELTS': 165, 'SAT': 134, 'TOEFL': 120, 'UTBK': 195, 'TKA': 120, 'Final Test': 120, 'Mid Test': 90, 'Daily Test': 30 };
+const STATUS_UJIAN = ['DRAFT', 'AKTIF', 'SELESAI', 'ARSIP'];
+const staffLoader = ref => api('staffMedia', A.token, ref);
+
+async function call(fn, ...args) {
+  try { return await api(fn, A.token, ...args); }
+  catch (e) {
+    if (/SESI_HABIS/.test(e.message)) { toast('Sesi login berakhir. Silakan masuk kembali.', 'err'); staffOut(true); }
+    throw e;
+  }
+}
+async function run(fn, ...args) {
+  busy(true);
+  try { return await call(fn, ...args); }
+  finally { busy(false); }
+}
+const M = $('#s-main');
+const stPill = s => `<span class="st ${esc(s)}">${esc(s)}</span>`;
+const empty = (msg, btn) => `<div class="empty"><p>${msg}</p>${btn || ''}</div>`;
+const snip = (t, n) => { const s = String(t || '').replace(/\[\[[^\]]+\]\]/g, '[media]').replace(/\*\*|\[\/?u\]/g, ''); return s.length > (n || 90) ? s.slice(0, n || 90) + '…' : s; };
+
+/* ---------------- login / logout ---------------- */
+$('#btn-staf').addEventListener('click', async () => {
+  const u = $('#in-user').value.trim(), p = $('#in-pass').value;
+  if (!u || !p) return toast('Isi username dan password.', 'err');
+  busy(true);
+  try {
+    const r = await api('staffLogin', u, p);
+    A.token = r.token;
+    try { sessionStorage.setItem('cbt_stf', r.token); } catch (e) { }
+    $('#in-pass').value = '';
+    enterStaff(r);
+  } catch (e) { toast(errMsg(e), 'err'); }
+  finally { busy(false); }
+});
+$('#s-logout').addEventListener('click', () => staffOut(false));
+
+function staffOut(silent) {
+  if (A.token && !silent) api('staffLogout', A.token).catch(() => { });
+  A.token = null; A.user = null; A.exams = null;
+  clearInterval(A.pollT); clearInterval(A.monT);
+  try { sessionStorage.removeItem('cbt_stf'); } catch (e) { }
+  showView('v-login');
+}
+
+function enterStaff(r) {
+  A.user = r.user; A.kategori = r.kategori || Object.keys(PRESET_DURASI);
+  $('#s-user').textContent = r.user.nama + ' · ' + r.user.role;
+  $$('#s-nav a').forEach(a => {
+    const roles = a.dataset.role;
+    a.hidden = roles && roles.split(',').indexOf(r.user.role) < 0;
+    a.onclick = () => nav(a.dataset.v);
+  });
+  showView('v-staff');
+  nav(r.user.wajib_ganti ? 'akun' : 'beranda');
+  A.since = Date.now();
+  clearInterval(A.pollT);
+  A.pollT = setInterval(pollViolations, 15000);
+}
+
+(function resume() {
+  let t = null;
+  try { t = sessionStorage.getItem('cbt_stf'); } catch (e) { }
+  if (!t) return;
+  A.token = t;
+  api('staffMe', t).then(enterStaff).catch(() => { A.token = null; try { sessionStorage.removeItem('cbt_stf'); } catch (e) { } });
+})();
+
+async function pollViolations() {
+  if (!A.token) return;
+  try {
+    const r = await call('getNewViolations', A.since);
+    A.since = r.now;
+    if (!r.list.length) return;
+    beep();
+    r.list.slice(-4).forEach(v => toast(`${v.nama}: ${v.jenis}${v.tindakan && v.tindakan !== 'Peringatan' ? ' — ' + v.tindakan : ''} (${v.ujian})`, 'warn', 7000));
+    if (A.view !== 'awas') { A.badge += r.list.length; $('#s-badge').textContent = A.badge; $('#s-badge').hidden = false; }
+  } catch (e) { }
+}
+
+const VIEWS = {};
+function nav(v, arg) {
+  clearInterval(A.monT);
+  A.view = v;
+  $$('#s-nav a').forEach(a => a.classList.toggle('on', a.dataset.v === v || (v === 'soal' && a.dataset.v === 'ujian')));
+  if (v === 'awas') { A.badge = 0; $('#s-badge').hidden = true; }
+  M.innerHTML = '<div class="empty">Memuat…</div>';
+  Promise.resolve(VIEWS[v](arg)).catch(e => { M.innerHTML = `<div class="warnbox">${esc(errMsg(e))}</div>`; });
+}
+
+async function getExams(force) {
+  if (!A.exams || force) A.exams = await call('listExams');
+  return A.exams;
+}
+
+/** Pemilih ujian untuk halaman pengawasan/penilaian/rekap. */
+async function examPicker(title, sub, onPick, pre) {
+  const ex = (await getExams(true)).filter(e => e.status !== 'ARSIP');
+  const opts = ex.map(e => `<option value="${esc(e.exam_id)}">${esc(e.judul)} — ${esc(e.kategori)} (${esc(e.status)})</option>`).join('');
+  M.innerHTML = `<div class="ph"><div><h1>${title}</h1><p>${sub}</p></div>
+    <select class="in" id="pk" style="max-width:420px">${opts || '<option value="">Belum ada ujian</option>'}</select></div><div id="pk-body"></div>`;
+  const sel = $('#pk');
+  const aktif = ex.find(e => e.status === 'AKTIF');
+  sel.value = pre || (aktif ? aktif.exam_id : (ex[0] ? ex[0].exam_id : ''));
+  sel.onchange = () => { clearInterval(A.monT); onPick(sel.value, $('#pk-body')); };
+  if (sel.value) onPick(sel.value, $('#pk-body'));
+  else $('#pk-body').innerHTML = empty('Belum ada ujian yang bisa dipilih.');
+}
+
+/* ================= BERANDA ================= */
+VIEWS.beranda = async () => {
+  const d = await call('getDashboard');
+  const s = d.stat;
+  M.innerHTML = `
+    ${A.user.wajib_ganti ? '<div class="warnbox">Anda masih memakai password awal. Ganti di menu "Akun saya".</div>' : ''}
+    <div class="ph"><div><h1>Assalamu'alaikum, ${esc(A.user.nama)}</h1><p>Ringkasan ujian yang sedang berjalan.</p></div></div>
+    <div class="stats">
+      <div class="stat"><b>${s.ujian_aktif}</b><span>Ujian aktif</span></div>
+      <div class="stat"><b>${s.mengerjakan}</b><span>Siswa sedang mengerjakan</span></div>
+      <div class="stat ${s.terkunci ? 'alert' : ''}"><b>${s.terkunci}</b><span>Layar terkunci</span></div>
+      <div class="stat ${s.pelanggaran_24j ? 'alert' : ''}"><b>${s.pelanggaran_24j}</b><span>Pelanggaran 24 jam</span></div>
+      <div class="stat"><b>${s.total_ujian}</b><span>Total ujian</span></div>
+      ${s.total_siswa !== null ? `<div class="stat"><b>${s.total_siswa}</b><span>Siswa terdaftar</span></div>` : ''}
+    </div>
+    <div class="card"><h3>Ujian aktif</h3>
+      ${d.aktif.length ? `<div class="tbl-wrap"><table class="t"><thead><tr><th>Ujian</th><th>Jadwal</th><th>Token</th><th class="num">Mengerjakan</th><th class="num">Terkunci</th><th class="num">Selesai</th><th></th></tr></thead><tbody>
+      ${d.aktif.map(e => `<tr><td><b>${esc(e.judul)}</b><br><span class="muted small">${esc(e.kategori)} · ${esc(e.mapel)}</span></td><td>${esc(e.jadwal)}</td>
+        <td><span class="token">${esc(e.token)}</span></td><td class="num">${e.mengerjakan}</td><td class="num">${e.terkunci}</td><td class="num">${e.selesai}</td>
+        <td><button class="btn sm pri" data-awas="${esc(e.exam_id)}">Awasi</button></td></tr>`).join('')}
+      </tbody></table></div>` : empty('Tidak ada ujian aktif. Aktifkan ujian dari menu "Ujian & bank soal".')}
+    </div>`;
+  $$('[data-awas]', M).forEach(b => b.onclick = () => nav('awas', b.dataset.awas));
+};
+
+/* ================= UJIAN ================= */
+VIEWS.ujian = async () => {
+  const ex = await getExams(true);
+  M.innerHTML = `<div class="ph"><div><h1>Ujian &amp; bank soal</h1><p>Buat jadwal, bagikan token, kelola soal.</p></div>
+    <button class="btn pri" id="ex-new">Buat ujian</button></div>
+    <div class="filters"><input class="in" id="ex-q" placeholder="Cari judul/mapel"><select class="in" id="ex-st"><option value="">Semua status</option>${STATUS_UJIAN.map(s => `<option>${s}</option>`).join('')}</select></div>
+    <div id="ex-list"></div>`;
+  $('#ex-new').onclick = () => examForm(null);
+  const draw = () => {
+    const q = $('#ex-q').value.toLowerCase(), st = $('#ex-st').value;
+    const list = ex.filter(e => (!st || e.status === st) && (!q || (e.judul + ' ' + e.mapel).toLowerCase().includes(q)));
+    $('#ex-list').innerHTML = list.length ? `<div class="tbl-wrap"><table class="t"><thead><tr><th>Ujian</th><th>Kelas</th><th>Jadwal</th><th>Durasi</th><th>Token</th><th class="num">Soal</th><th class="num">Peserta</th><th>Status</th><th></th></tr></thead><tbody>
+      ${list.map(e => `<tr>
+        <td><b>${esc(e.judul)}</b><br><span class="muted small">${esc(e.kategori)} · ${esc(e.mapel)} · ${esc(e.guru_nama)}</span></td>
+        <td>${esc(e.kelas_target)}</td><td>${esc(e.jadwal)}</td><td>${e.durasi_menit} mnt</td>
+        <td><span class="token">${esc(e.access_code)}</span></td><td class="num">${e.jumlah_soal}</td><td class="num">${e.jumlah_peserta}</td>
+        <td>${e.bisa_edit ? `<select class="in" data-st="${esc(e.exam_id)}" style="min-width:110px">${STATUS_UJIAN.map(s => `<option ${s === e.status ? 'selected' : ''}>${s}</option>`).join('')}</select>` : stPill(e.status)}</td>
+        <td style="white-space:nowrap"><button class="btn sm pri" data-soal="${esc(e.exam_id)}">Soal</button>
+          ${e.bisa_edit ? `<button class="btn sm ghost" data-ed="${esc(e.exam_id)}">Ubah</button>
+          <button class="btn sm ghost" data-tok="${esc(e.exam_id)}" title="Buat token baru">Token</button>
+          <button class="btn sm ghost" data-del="${esc(e.exam_id)}">Hapus</button>` : ''}</td></tr>`).join('')}
+      </tbody></table></div>` : empty('Belum ada ujian.', '<button class="btn pri" onclick="examForm(null)">Buat ujian pertama</button>');
+    $$('[data-soal]').forEach(b => b.onclick = () => nav('soal', b.dataset.soal));
+    $$('[data-ed]').forEach(b => b.onclick = () => examForm(ex.find(e => e.exam_id === b.dataset.ed)));
+    $$('[data-tok]').forEach(b => b.onclick = async () => {
+      if (!await confirmBox('Buat token baru? Token lama tidak berlaku lagi untuk siswa yang belum masuk.')) return;
+      const r = await run('regenToken', b.dataset.tok); toast('Token baru: ' + r.access_code, 'ok'); nav('ujian');
+    });
+    $$('[data-del]').forEach(b => b.onclick = async () => {
+      if (!await confirmBox('Hapus ujian beserta seluruh soalnya? Tindakan ini tidak bisa dibatalkan.', 'Hapus', 'warn')) return;
+      try { await run('deleteExam', b.dataset.del); toast('Ujian dihapus.', 'ok'); nav('ujian'); } catch (e) { toast(errMsg(e), 'err'); }
+    });
+    $$('[data-st]').forEach(s => s.onchange = async () => {
+      try { await run('setExamStatus', s.dataset.st, s.value); toast('Status: ' + s.value, 'ok'); A.exams = null; }
+      catch (e) { toast(errMsg(e), 'err'); nav('ujian'); }
+    });
+  };
+  $('#ex-q').oninput = draw; $('#ex-st').onchange = draw;
+  draw();
+};
+
+async function examForm(e) {
+  if (!A.classes.length) { try { A.classes = await call('listClasses'); } catch (x) { } }
+  const d = e || { kategori: 'Daily Test', durasi_menit: 30, kelas_target: 'SEMUA', acak_soal: true, acak_opsi: true, maks_pelanggaran: 5, aksi_pelanggaran: 'KUNCI', wajib_fullscreen: true, izinkan_kembali: true, tampil_nilai: false };
+  const ck = (k, lbl) => `<label class="check"><input type="checkbox" id="ef-${k}" ${d[k] ? 'checked' : ''}> ${lbl}</label>`;
+  modal({
+    title: e ? 'Ubah ujian' : 'Buat ujian', wide: true,
+    body: `<div class="grid2">
+      <label class="fld"><span>Judul ujian</span><input class="in" id="ef-judul" value="${esc(d.judul || '')}" placeholder="mis. Penilaian Harian Bab 3 – Biologi XI"></label>
+      <label class="fld"><span>Kategori</span><select class="in" id="ef-kategori">${A.kategori.map(k => `<option ${k === d.kategori ? 'selected' : ''}>${esc(k)}</option>`).join('')}</select></label>
+      <label class="fld"><span>Mata pelajaran / modul</span><input class="in" id="ef-mapel" value="${esc(d.mapel || '')}"></label>
+      <label class="fld"><span>Kelas peserta (pisah koma, atau SEMUA)</span><input class="in" id="ef-kelas" list="ef-kl" value="${esc(d.kelas_target || 'SEMUA')}">
+        <datalist id="ef-kl">${A.classes.map(c => `<option>${esc(c)}</option>`).join('')}</datalist></label>
+      <label class="fld"><span>Mulai boleh masuk</span><input class="in" type="datetime-local" id="ef-mulai" value="${esc(d.waktu_mulai || '')}"></label>
+      <label class="fld"><span>Batas akhir jadwal</span><input class="in" type="datetime-local" id="ef-selesai" value="${esc(d.waktu_selesai || '')}"></label>
+      <label class="fld"><span>Durasi mengerjakan (menit)</span><input class="in" type="number" min="1" max="600" id="ef-durasi" value="${d.durasi_menit}"></label>
+      <label class="fld"><span>Token (kosongkan untuk dibuat otomatis)</span><input class="in upper" id="ef-token" maxlength="10" value="${esc(d.access_code || '')}"></label>
+      <label class="fld"><span>Batas pelanggaran (0 = hanya dicatat)</span><input class="in" type="number" min="0" max="50" id="ef-maks" value="${d.maks_pelanggaran}"></label>
+      <label class="fld"><span>Jika batas tercapai</span><select class="in" id="ef-aksi">
+        <option value="KUNCI" ${d.aksi_pelanggaran !== 'HENTIKAN' ? 'selected' : ''}>Kunci layar, tunggu pengawas</option>
+        <option value="HENTIKAN" ${d.aksi_pelanggaran === 'HENTIKAN' ? 'selected' : ''}>Hentikan ujian otomatis</option></select></label>
+    </div>
+    <div class="grid2">${ck('acak_soal', 'Acak urutan soal (soal satu bacaan tetap berurutan)')}${ck('acak_opsi', 'Acak urutan opsi pilihan ganda')}
+      ${ck('wajib_fullscreen', 'Wajib layar penuh')}${ck('izinkan_kembali', 'Siswa boleh kembali ke soal sebelumnya')}
+      ${ck('tampil_nilai', 'Tampilkan nilai ke siswa setelah selesai')}</div>`,
+    actions: [{ label: 'Batal' }, {
+      label: e ? 'Simpan perubahan' : 'Buat ujian', cls: 'pri', onClick: async () => {
+        const o = {
+          exam_id: e ? e.exam_id : '', judul: $('#ef-judul').value, kategori: $('#ef-kategori').value, mapel: $('#ef-mapel').value,
+          kelas_target: $('#ef-kelas').value, waktu_mulai: $('#ef-mulai').value, waktu_selesai: $('#ef-selesai').value,
+          durasi_menit: $('#ef-durasi').value, access_code: $('#ef-token').value.trim().toUpperCase(),
+          maks_pelanggaran: $('#ef-maks').value, aksi_pelanggaran: $('#ef-aksi').value
+        };
+        ['acak_soal', 'acak_opsi', 'wajib_fullscreen', 'izinkan_kembali', 'tampil_nilai'].forEach(k => o[k] = $('#ef-' + k).checked);
+        const r = await run('saveExam', o);
+        toast('Ujian tersimpan. Token: ' + r.access_code, 'ok', 7000);
+        A.exams = null;
+        if (e) nav('ujian'); else nav('soal', r.exam_id);
+      }
+    }]
+  });
+  $('#ef-kategori').onchange = ev => { if (!e) $('#ef-durasi').value = PRESET_DURASI[ev.target.value] || 60; };
+}
+
+/* ================= BANK SOAL ================= */
+const KUNCI_HINT = {
+  PG: 'Satu huruf, mis. B', PG_KOMPLEKS: 'Beberapa huruf dipisah koma, mis. A,C', BENAR_SALAH: 'Per pernyataan berurutan: B atau S, mis. B,S,B',
+  MENJODOHKAN: 'Pasangan nomor-huruf, mis. 1-C, 2-A, 3-B', URUTAN: 'Nomor item dalam urutan benar, mis. 3,1,2',
+  SEBAB_AKIBAT: 'A–E', ANALISIS: 'A=(1,2,3) · B=(1,3) · C=(2,4) · D=(4) · E=semua',
+  ISIAN: 'Jawaban benar. Alternatif dipisah | (mis. 0.5|1/2). Toleransi angka pakai ~ (mis. 3.14~0.01)'
+};
+const QFIELDS = {
+  PG: ['opsi', 'kunci'], PG_KOMPLEKS: ['opsi', 'kunci'], TF: ['kselTF', 'label'], TFNG: ['kselTFNG'], YNNG: ['kselYNNG'],
+  BENAR_SALAH: ['pernyataan', 'label', 'kunci'], MENJODOHKAN: ['kiri', 'kanan', 'kunci'], URUTAN: ['item', 'kunci'],
+  SEBAB_AKIBAT: ['pern1', 'alasan', 'kunci'], ANALISIS: ['pernyataan', 'kunci'], ISIAN: ['kunci'], ESAI: ['minkata', 'rubrik'], SPEAKING: ['persiapan', 'durasi', 'rubrik']
+};
+
+VIEWS.soal = async (examId) => {
+  const d = await call('listQuestions', examId);
+  A.qd = d;
+  const e = d.exam, can = d.bisa_edit;
+  const stimName = id => { const s = d.stimuli.find(x => x.stimulus_id === id); return s ? (s.judul || snip(s.teks, 30)) : ''; };
+  M.innerHTML = `<div class="ph"><div><p><a href="#" id="bk">← Daftar ujian</a></p><h1>${esc(e.judul)}</h1>
+      <p>${esc(e.kategori)} · ${esc(e.mapel)} · ${d.questions.length} soal · token <span class="token">${esc(e.access_code)}</span> · ${stPill(e.status)}</p></div>
+    ${can ? `<div class="row gap"><button class="btn ghost" id="q-bacaan">Bacaan &amp; audio bersama (${d.stimuli.length})</button>
+      <button class="btn ghost" id="q-imp">Import Word / JSON</button><button class="btn pri" id="q-new">Tambah soal</button></div>` : ''}</div>
+    ${e.status === 'AKTIF' ? '<div class="warnbox">Ujian sedang AKTIF. Perubahan soal langsung berlaku bagi siswa yang baru masuk.</div>' : ''}
+    <div id="q-list"></div>`;
+  $('#bk').onclick = ev => { ev.preventDefault(); nav('ujian'); };
+  if (can) {
+    $('#q-new').onclick = () => questionForm(examId, null);
+    $('#q-imp').onclick = () => importForm(examId);
+    $('#q-bacaan').onclick = () => stimulusManager(examId);
+  }
+  const L = $('#q-list');
+  if (!d.questions.length) { L.innerHTML = empty('Belum ada soal. Tambahkan satu per satu atau import dari Word / JSON sekaligus.', can ? '<button class="btn pri" id="q-imp2">Import soal</button>' : ''); if (can) $('#q-imp2').onclick = () => importForm(examId); return; }
+  let lastSec = null;
+  L.innerHTML = `<div class="tbl-wrap"><table class="t"><thead><tr><th class="num">No</th><th>Tipe</th><th>Soal</th><th>Bacaan</th><th>Kunci</th><th class="num">Bobot</th><th></th></tr></thead><tbody>
+    ${d.questions.map((q, i) => {
+      const head = q.section !== lastSec ? `<tr><td colspan="7" style="background:var(--hijau-t);font-weight:700">${esc(q.section)}</td></tr>` : '';
+      lastSec = q.section;
+      return head + `<tr><td class="num">${q.no || i + 1}</td><td>${esc(TIPE_LABEL[q.tipe] || q.tipe)}</td><td>${esc(snip(q.teks || (q.opsi && q.opsi.pernyataan), 110))}${q.media ? ' <span class="st">media</span>' : ''}</td>
+        <td class="small">${esc(stimName(q.stim))}</td><td><b>${esc(q.kunci || (q.tipe === 'ESAI' || q.tipe === 'SPEAKING' ? 'manual' : '—'))}</b></td><td class="num">${q.bobot}</td>
+        <td style="white-space:nowrap"><button class="btn sm ghost" data-pv="${i}">Lihat</button>${can ? ` <button class="btn sm ghost" data-ed="${i}">Ubah</button> <button class="btn sm ghost" data-del="${i}">Hapus</button>` : ''}</td></tr>`;
+    }).join('')}</tbody></table></div>
+    ${can ? '<p class="small muted"><a href="#" id="q-renum">Rapikan penomoran 1..n</a></p>' : ''}`;
+  $$('[data-pv]').forEach(b => b.onclick = () => previewQ(d.questions[b.dataset.pv], d));
+  $$('[data-ed]').forEach(b => b.onclick = () => questionForm(examId, d.questions[b.dataset.ed]));
+  $$('[data-del]').forEach(b => b.onclick = async () => {
+    const q = d.questions[b.dataset.del];
+    if (!await confirmBox('Hapus soal nomor ' + q.no + '?', 'Hapus', 'warn')) return;
+    await run('deleteQuestion', examId, q.id); toast('Soal dihapus.', 'ok'); nav('soal', examId);
+  });
+  if (can) $('#q-renum').onclick = async ev => { ev.preventDefault(); await run('renumberQuestions', examId); nav('soal', examId); };
+};
+
+function qPreviewHtml(q, stim) {
+  const o = q.opsi || {};
+  let body = '';
+  const optRow = (L, t, isKey) => `<div class="opt ${isKey ? 'sel' : ''}"><span class="L">${L}</span><div>${rich(t)}</div></div>`;
+  const ks = String(q.kunci || '').toUpperCase().split(/[,;\s]+/);
+  switch (q.tipe) {
+    case 'PG': case 'PG_KOMPLEKS': body = Object.keys(o).map(L => optRow(L, o[L], ks.includes(L))).join(''); break;
+    case 'SEBAB_AKIBAT': body = `<div class="box"><b>Pernyataan:</b> ${rich(o.pernyataan)}<br><b>SEBAB</b><br><b>Alasan:</b> ${rich(o.alasan)}</div>` + FIXED_TEXT.SEBAB_AKIBAT.map((t, i) => optRow(LETTERS[i], t, ks.includes(LETTERS[i]))).join(''); break;
+    case 'ANALISIS': body = (o.pernyataan || []).map((p, i) => `<div>(${i + 1}) ${rich(p)}</div>`).join('') + FIXED_TEXT.ANALISIS.map((t, i) => optRow(LETTERS[i], t, ks.includes(LETTERS[i]))).join(''); break;
+    case 'BENAR_SALAH': body = `<table class="bs-table"><tr><th>Pernyataan</th><th>Kunci</th></tr>${(o.pernyataan || []).map((p, i) => `<tr><td>${rich(p)}</td><td>${ks[i] === 'B' ? esc(o.label[0]) : esc(o.label[1])}</td></tr>`).join('')}</table>`; break;
+    case 'MENJODOHKAN': body = `<div class="grid2"><div>${(o.kiri || []).map((k, i) => `<div>${i + 1}. ${rich(k)} → <b>${esc(ks[i] || '?')}</b></div>`).join('')}</div><div>${Object.keys(o.kanan || {}).map(L => `<div>${L}. ${rich(o.kanan[L])}</div>`).join('')}</div></div>`; break;
+    case 'URUTAN': body = (o.item || []).map((t, i) => `<div>${i + 1}. ${rich(t)}</div>`).join('') + `<p>Urutan benar: <b>${esc(q.kunci)}</b></p>`; break;
+    case 'ESAI': case 'SPEAKING': body = `<p class="muted">Dinilai manual.${q.set && q.set.min_kata ? ' Minimal ' + q.set.min_kata + ' kata.' : ''}${q.tipe === 'SPEAKING' ? ` Persiapan ${q.set.persiapan} dtk, bicara ${q.set.durasi_bicara} dtk.` : ''}</p>${q.rubrik ? `<div class="box"><b>Rubrik:</b><br>${rich(q.rubrik)}</div>` : ''}`; break;
+    default: body = `<p>Kunci: <b>${esc(q.kunci)}</b></p>`;
+  }
+  return `<div class="qprev">${stim ? `<div class="stim" style="position:static;max-height:260px;margin-bottom:14px">${stim.judul ? `<h4>${esc(stim.judul)}</h4>` : ''}${stim.media_url ? mediaTag(stim.media_url) : ''}<div class="txt">${rich(stim.teks)}</div></div>` : ''}
+    <p class="muted small">${esc(q.section)} · ${esc(TIPE_LABEL[q.tipe] || q.tipe)} · bobot ${q.bobot}${q.set && q.set.putar_sekali ? ' · audio diputar sekali' : ''}</p>
+    ${q.media ? `<div class="qmedia">${mediaTag(q.media)}</div>` : ''}<div class="qtext">${rich(q.teks)}</div><div class="opts">${body}</div>
+    ${q.pembahasan ? `<div class="box" style="margin-top:12px"><b>Pembahasan:</b><br>${rich(q.pembahasan)}</div>` : ''}</div>`;
+}
+
+function previewQ(q, d) {
+  const stim = d.stimuli.find(s => s.stimulus_id === q.stim);
+  const m = modal({ title: 'Pratinjau soal ' + (q.no || ''), wide: true, body: qPreviewHtml(q, stim) });
+  hydrateMedia(m.box, staffLoader); renderMath(m.box);
+}
+
+function questionForm(examId, q) {
+  const d = A.qd, F = q ? q.F : { TIPE: 'PG', SECTION: (d.questions[d.questions.length - 1] || {}).section || '', BOBOT: 1 };
+  const tipeOpts = Object.keys(TIPE_LABEL).map(t => `<option value="${t}" ${t === F.TIPE ? 'selected' : ''}>${esc(TIPE_LABEL[t])}</option>`).join('');
+  const stimOpts = `<option value="">Tanpa bacaan</option>` + d.stimuli.map(s => `<option value="${esc(s.stimulus_id)}" ${q && q.stim === s.stimulus_id ? 'selected' : ''}>${esc(s.judul || snip(s.teks, 50))}</option>`).join('');
+  const ta = (id, lbl, val, rows, ph) => `<label class="fld" data-g="${id}"><span>${lbl}</span><textarea class="in" id="qf-${id}" rows="${rows || 3}" placeholder="${esc(ph || '')}">${esc(val || '')}</textarea></label>`;
+  const inp = (id, lbl, val, ph, type) => `<label class="fld" data-g="${id}"><span>${lbl}</span><input class="in" id="qf-${id}" type="${type || 'text'}" value="${esc(val == null ? '' : val)}" placeholder="${esc(ph || '')}"></label>`;
+  const sel = (id, lbl, opts, val) => `<label class="fld" data-g="${id}"><span>${lbl}</span><select class="in" id="qf-${id}">${opts.map(o => `<option ${o === val ? 'selected' : ''}>${o}</option>`).join('')}</select></label>`;
+  const m = modal({
+    title: q ? 'Ubah soal ' + q.no : 'Tambah soal', wide: true,
+    body: `<div class="grid3">
+        <label class="fld"><span>Tipe soal</span><select class="in" id="qf-tipe">${tipeOpts}</select></label>
+        ${inp('section', 'Section / bagian', F.SECTION, 'mis. Listening Part 1, Reading, Matematika')}
+        ${inp('nomor', 'Nomor urut', q ? q.no : '', 'otomatis', 'number')}
+      </div>
+      <label class="fld"><span>Bacaan / audio bersama</span><select class="in" id="qf-stim">${stimOpts}</select></label>
+      ${ta('soal', 'Teks soal', F.SOAL, 4, 'Format: **tebal**, [u]garis bawah[/u], rumus \\( x^2 \\)')}
+      <div class="grid2">
+        <label class="fld"><span>Media soal (gambar/audio)</span><input class="in" id="qf-media" value="${esc(F.MEDIA || '')}" placeholder="Unggah file atau tempel link Google Drive"></label>
+        <label class="fld"><span>&nbsp;</span><div class="row gap"><select class="in" id="qf-mt" style="width:auto"><option value="GAMBAR">Link = gambar</option><option value="AUDIO" ${/#audio/.test(F.MEDIA || '') ? 'selected' : ''}>Link = audio</option></select>
+          <label class="btn ghost sm">Unggah file<input type="file" id="qf-file" accept="image/*,audio/*" hidden></label></div></label>
+      </div>
+      <div data-g="opsi" class="grid2">${'ABCDE'.split('').map(L => `<label class="fld"><span>Opsi ${L}</span><input class="in" id="qf-${L}" value="${esc(F[L] || '')}"></label>`).join('')}
+        <label class="fld"><span>Opsi F (opsional)</span><input class="in" id="qf-F" value="${esc(F.F || '')}"></label></div>
+      ${ta('pernyataan', 'Pernyataan (satu per baris)', F.PERNYATAAN, 4)}
+      ${ta('pern1', 'Pernyataan', F.PERNYATAAN, 2)}
+      ${ta('alasan', 'Alasan', F.ALASAN, 2)}
+      ${inp('label', 'Label pilihan', F.LABEL, 'Benar/Salah, Ya/Tidak, True/False')}
+      ${ta('kiri', 'Kolom kiri (satu item per baris)', F.KIRI, 4)}
+      ${ta('kanan', 'Kolom kanan (A. …, B. …)', F.KANAN, 4)}
+      ${ta('item', 'Item yang diurutkan (satu per baris)', F.ITEM, 4)}
+      ${sel('kselTF', 'Kunci', ['TRUE', 'FALSE'], F.KUNCI)}${sel('kselTFNG', 'Kunci', ['TRUE', 'FALSE', 'NOT GIVEN'], F.KUNCI)}${sel('kselYNNG', 'Kunci', ['YES', 'NO', 'NOT GIVEN'], F.KUNCI)}
+      ${inp('kunci', 'Kunci jawaban', F.KUNCI, '')}
+      ${inp('minkata', 'Minimal kata', F.MIN_KATA, 'mis. 250', 'number')}
+      <div class="grid2">${inp('persiapan', 'Waktu persiapan (detik)', F.PERSIAPAN || 60, '', 'number')}${inp('durasi', 'Waktu bicara (detik)', F.DURASI_BICARA || 120, '', 'number')}</div>
+      ${ta('rubrik', 'Rubrik penilaian (untuk guru)', F.RUBRIK, 3)}
+      <div class="grid2">${inp('bobot', 'Bobot skor', F.BOBOT || 1, '', 'number')}
+        <label class="check" style="margin-top:28px"><input type="checkbox" id="qf-once" ${F.PUTAR_SEKALI ? 'checked' : ''}> Audio hanya boleh diputar sekali</label></div>
+      ${ta('pembahasan', 'Pembahasan (tidak ditampilkan ke siswa)', F.PEMBAHASAN, 2)}`,
+    actions: [{ label: 'Batal' }, {
+      label: 'Simpan soal', cls: 'pri', onClick: async () => {
+        const t = $('#qf-tipe').value, v = id => ($('#qf-' + id) || {}).value || '';
+        const G = { TIPE: t, SECTION: v('section'), SOAL: v('soal'), BOBOT: v('bobot'), PEMBAHASAN: v('pembahasan'), RUBRIK: v('rubrik'), PUTAR_SEKALI: $('#qf-once').checked ? 'YA' : '' };
+        const med = v('media').trim();
+        if (med) { if (/^drive:/.test(med)) G.MEDIA = med; else G[$('#qf-mt').value] = med; }
+        const f = QFIELDS[t] || [];
+        if (f.includes('opsi')) 'ABCDEF'.split('').forEach(L => G[L] = v(L));
+        if (f.includes('pernyataan')) G.PERNYATAAN = v('pernyataan');
+        if (f.includes('pern1')) G.PERNYATAAN = v('pern1');
+        if (f.includes('alasan')) G.ALASAN = v('alasan');
+        if (f.includes('label')) G.LABEL = v('label');
+        if (f.includes('kiri')) { G.KIRI = v('kiri'); G.KANAN = v('kanan'); }
+        if (f.includes('item')) G.ITEM = v('item');
+        if (f.includes('minkata')) G.MIN_KATA = v('minkata');
+        if (f.includes('persiapan')) { G.PERSIAPAN = v('persiapan'); G.DURASI_BICARA = v('durasi'); }
+        G.KUNCI = f.includes('kselTF') ? v('kselTF') : f.includes('kselTFNG') ? v('kselTFNG') : f.includes('kselYNNG') ? v('kselYNNG') : v('kunci');
+        await run('saveQuestion', examId, q ? q.id : '', G, $('#qf-stim').value, v('nomor'));
+        toast('Soal tersimpan.', 'ok');
+        nav('soal', examId);
+      }
+    }]
+  });
+  const toggle = () => {
+    const t = $('#qf-tipe').value, f = QFIELDS[t] || [];
+    $$('[data-g]', m.box).forEach(el => {
+      const g = el.dataset.g;
+      if (['section', 'nomor', 'soal', 'bobot', 'pembahasan'].includes(g)) return;
+      el.hidden = !(f.includes(g) || (g === 'kanan' && f.includes('kiri')) || (g === 'durasi' && f.includes('persiapan')));
+    });
+    const k = $('#qf-kunci'); if (k) k.placeholder = KUNCI_HINT[t] || '';
+    const kl = $('[data-g="kunci"] span', m.box); if (kl) kl.textContent = 'Kunci jawaban — ' + (KUNCI_HINT[t] || '');
+  };
+  $('#qf-tipe').onchange = toggle; toggle();
+  $('#qf-file').onchange = async ev => {
+    const file = ev.target.files[0]; if (!file) return;
+    if (file.size > 25 * 1048576) return toast('Maksimal 25 MB.', 'err');
+    busy(true);
+    try { const r = await call('uploadMedia', await fileToB64(file), file.name, file.type); $('#qf-media').value = r.ref; toast('Media terunggah.', 'ok'); }
+    catch (e) { toast(errMsg(e), 'err'); } finally { busy(false); }
+  };
+}
+
+function stimulusManager(examId) {
+  const d = A.qd;
+  const list = () => d.stimuli.length ? `<div class="tbl-wrap"><table class="t"><thead><tr><th>Judul</th><th>Isi</th><th>Media</th><th></th></tr></thead><tbody>
+    ${d.stimuli.map((s, i) => `<tr><td>${esc(s.judul || '—')}</td><td class="small">${esc(snip(s.teks, 80))}</td><td>${s.media_url ? '<span class="st">ada</span>' : ''}</td>
+    <td style="white-space:nowrap"><button class="btn sm ghost" data-se="${i}">Ubah</button> <button class="btn sm ghost" data-sd="${i}">Hapus</button></td></tr>`).join('')}</tbody></table></div>`
+    : empty('Belum ada bacaan bersama. Bacaan dipakai untuk teks reading, audio listening, grafik, atau tabel yang dipakai beberapa soal.');
+  const m = modal({ title: 'Bacaan & audio bersama', wide: true, body: `<div class="row sp" style="margin-bottom:12px"><span class="muted small">Setelah dibuat, pilih bacaan ini di form soal.</span><button class="btn pri sm" id="st-new">Tambah bacaan</button></div><div id="st-list">${list()}</div>` });
+  const edit = s => {
+    s = s || {};
+    modal({
+      title: s.stimulus_id ? 'Ubah bacaan' : 'Tambah bacaan', wide: true,
+      body: `<label class="fld"><span>Judul (opsional)</span><input class="in" id="sf-j" value="${esc(s.judul || '')}" placeholder="mis. Reading Passage 1 / Listening Section 2"></label>
+        <label class="fld"><span>Teks bacaan</span><textarea class="in" id="sf-t" rows="12">${esc(s.teks || '')}</textarea></label>
+        <div class="grid2"><label class="fld"><span>Media (audio listening / gambar)</span><input class="in" id="sf-m" value="${esc(s.media_url || '')}"></label>
+        <label class="fld"><span>&nbsp;</span><div class="row gap"><select class="in" id="sf-mt" style="width:auto"><option value="image">Link = gambar</option><option value="audio" ${/#audio/.test(s.media_url || '') ? 'selected' : ''}>Link = audio</option></select>
+        <label class="btn ghost sm">Unggah file<input type="file" id="sf-f" accept="image/*,audio/*" hidden></label></div></label></div>`,
+      actions: [{ label: 'Batal', onClick: () => stimulusManager(examId) }, {
+        label: 'Simpan bacaan', cls: 'pri', onClick: async () => {
+          await run('saveStimulus', examId, { stimulus_id: s.stimulus_id || '', judul: $('#sf-j').value, teks: $('#sf-t').value, media_url: $('#sf-m').value, media_tipe: $('#sf-mt').value });
+          toast('Bacaan tersimpan.', 'ok'); nav('soal', examId);
+        }
+      }]
+    });
+    $('#sf-f').onchange = async ev => {
+      const file = ev.target.files[0]; if (!file) return;
+      busy(true);
+      try { const r = await call('uploadMedia', await fileToB64(file), file.name, file.type); $('#sf-m').value = r.ref; toast('Media terunggah.', 'ok'); }
+      catch (e) { toast(errMsg(e), 'err'); } finally { busy(false); }
+    };
+  };
+  $('#st-new', m.box).onclick = () => edit(null);
+  $$('[data-se]', m.box).forEach(b => b.onclick = () => edit(d.stimuli[b.dataset.se]));
+  $$('[data-sd]', m.box).forEach(b => b.onclick = async () => {
+    if (!await confirmBox('Hapus bacaan ini? Soal yang memakainya tetap ada tanpa bacaan.', 'Hapus', 'warn')) return;
+    await run('deleteStimulus', examId, d.stimuli[b.dataset.sd].stimulus_id); nav('soal', examId);
+  });
+}
+
+const FORMAT_HELP = `<pre class="code">[SECTION]: Reading
+[BACAAN]: Teks bacaan yang dipakai beberapa soal berikutnya…
+---
+[TIPE]: PG
+[SOAL]: What is the main idea of the passage?
+[A]: …   [B]: …   [C]: …   [D]: …
+[KUNCI]: B
+[BOBOT]: 1
+---
+[TIPE]: BENAR_SALAH
+[SOAL]: Tentukan benar atau salah.
+[PERNYATAAN]:
+Pernyataan pertama
+Pernyataan kedua
+[KUNCI]: B,S
+---
+[BACAAN]: SELESAI</pre>
+<p class="small muted">Tipe: PG, PG_KOMPLEKS, BENAR_SALAH, TF, TFNG, YNNG, ISIAN, ESAI, MENJODOHKAN ([KIRI]/[KANAN]), URUTAN ([ITEM]), SEBAB_AKIBAT ([PERNYATAAN]/[ALASAN]), ANALISIS, SPEAKING. Gambar yang ditempel di Word ikut terunggah. Lihat berkas Template_Soal_CBT.docx dan contoh_soal.json.</p>`;
+
+function importForm(examId) {
+  let result = null;
+  const m = modal({
+    title: 'Import soal dari Word atau JSON', wide: true,
+    body: `<div class="tabs"><button class="on" data-t="docx">Word (.docx)</button><button data-t="json">JSON</button><button data-t="help">Format penulisan</button></div>
+      <div data-p="docx"><label class="fld"><span>Pilih file .docx</span><input type="file" id="im-docx" accept=".docx"></label></div>
+      <div data-p="json" hidden><label class="fld"><span>Pilih file .json</span><input type="file" id="im-jf" accept=".json,application/json"></label>
+        <label class="fld"><span>atau tempel isi JSON</span><textarea class="in" id="im-jt" rows="6" placeholder='[{"tipe":"PG","soal":"…","opsi":["…","…"],"kunci":"A"}]'></textarea></label></div>
+      <div data-p="help" hidden>${FORMAT_HELP}</div>
+      <div class="row gap" style="margin:6px 0 14px"><button class="btn dark" id="im-check">Periksa soal</button>
+        <label class="check" style="margin:0"><input type="radio" name="im-mode" value="TAMBAH" checked> Tambahkan ke soal yang ada</label>
+        <label class="check" style="margin:0"><input type="radio" name="im-mode" value="GANTI"> Ganti semua soal ujian ini</label></div>
+      <div id="im-res"></div>`,
+    actions: [{ label: 'Tutup' }, {
+      label: 'Simpan soal valid', cls: 'pri', onClick: async () => {
+        if (!result) { toast('Periksa file terlebih dahulu.', 'err'); return false; }
+        const valid = result.items.filter(x => !x.errors.length);
+        if (!valid.length) { toast('Tidak ada soal valid.', 'err'); return false; }
+        const mode = $('input[name=im-mode]:checked', m.box).value;
+        if (mode === 'GANTI' && !await confirmBox('Semua soal lama di ujian ini akan dihapus. Lanjutkan?', 'Ganti semua', 'warn')) return false;
+        const r = await run('commitImport', examId, valid, mode);
+        toast(r.count + ' soal tersimpan' + (r.dilewati ? ', ' + r.dilewati + ' dilewati' : '') + '.', 'ok', 6000);
+        nav('soal', examId);
+      }
+    }]
+  });
+  let tab = 'docx';
+  $$('.tabs button', m.box).forEach(b => b.onclick = () => {
+    tab = b.dataset.t;
+    $$('.tabs button', m.box).forEach(x => x.classList.toggle('on', x === b));
+    $$('[data-p]', m.box).forEach(p => p.hidden = p.dataset.p !== tab);
+  });
+  $('#im-jf', m.box).onchange = ev => { const f = ev.target.files[0]; if (f) f.text().then(t => $('#im-jt', m.box).value = t); };
+  $('#im-check', m.box).onclick = async () => {
+    try {
+      if (tab === 'json') {
+        const t = $('#im-jt', m.box).value.trim();
+        if (!t) return toast('Pilih file atau tempel JSON.', 'err');
+        result = await run('previewImportJson', t);
+      } else {
+        const f = $('#im-docx', m.box).files[0];
+        if (!f) return toast('Pilih file .docx.', 'err');
+        if (!/\.docx$/i.test(f.name)) return toast('Gunakan format .docx (bukan .doc atau .pdf).', 'err');
+        result = await run('previewImportDocx', await fileToB64(f), f.name.replace(/\.docx$/i, ''));
+      }
+      drawResult();
+    } catch (e) { toast(errMsg(e), 'err'); }
+  };
+  function drawResult() {
+    const r = result;
+    $('#im-res', m.box).innerHTML = `
+      <div class="${r.error ? 'errs' : 'oklist'}"><b>${r.total} soal terbaca</b> · ${r.valid} valid · ${r.error} perlu diperbaiki · ${r.bacaan} bacaan bersama</div>
+      ${r.peringatan.map(p => `<div class="errs">${esc(p)}</div>`).join('')}
+      <div class="tbl-wrap" style="margin-top:10px;max-height:380px"><table class="t"><thead><tr><th class="num">#</th><th>Section</th><th>Tipe</th><th>Soal</th><th>Kunci</th><th>Catatan</th></tr></thead><tbody>
+      ${r.items.map((it, i) => `<tr><td class="num">${i + 1}</td><td class="small">${esc(it.section)}</td><td>${esc(it.tipe)}</td>
+        <td class="small">${it.stim ? '<span class="st">bacaan</span> ' : ''}${esc(snip(it.teks, 90))}${it.media ? ' <span class="st">media</span>' : ''}</td>
+        <td><b>${esc(it.kunci || '')}</b></td><td>${it.errors.length ? `<span style="color:var(--merah)">${esc(it.errors.join('; '))}</span>` : '✓'}</td></tr>`).join('')}
+      </tbody></table></div>`;
+  }
+}
+
+/* ================= PENGAWASAN ================= */
+VIEWS.awas = async (pre) => {
+  await examPicker('Pengawasan langsung', 'Status siswa diperbarui otomatis setiap 8 detik.', (id, box) => {
+    const load = async () => {
+      if (A.view !== 'awas') return clearInterval(A.monT);
+      try { drawMonitor(id, box, await call('getMonitor', id)); } catch (e) { box.innerHTML = `<div class="warnbox">${esc(errMsg(e))}</div>`; }
+    };
+    box.innerHTML = '<div class="empty">Memuat…</div>';
+    load();
+    clearInterval(A.monT);
+    A.monT = setInterval(load, 8000);
+  }, pre);
+};
+
+function drawMonitor(examId, box, d) {
+  const rows = d.rows;
+  const cnt = s => rows.filter(r => r.status === s).length;
+  const filt = box.dataset.f || '';
+  const q = (box.dataset.q || '').toLowerCase();
+  const list = rows.filter(r => (!filt || r.status === filt) && (!q || (r.nama + r.nisn + r.kelas).toLowerCase().includes(q)))
+    .sort((a, b) => (b.status === 'TERKUNCI') - (a.status === 'TERKUNCI') || b.vtotal - a.vtotal || String(a.kelas + a.nama).localeCompare(b.kelas + b.nama));
+  const vc = (n, lbl) => `<span class="${n ? 'h' : ''}" title="${lbl}">${lbl.charAt(0)}${n}</span>`;
+  box.innerHTML = `
+    <div class="stats">
+      <div class="stat"><b>${cnt('BELUM')}</b><span>Belum masuk</span></div>
+      <div class="stat"><b>${cnt('MENGERJAKAN')}</b><span>Mengerjakan</span></div>
+      <div class="stat ${cnt('TERKUNCI') ? 'alert' : ''}"><b>${cnt('TERKUNCI')}</b><span>Terkunci</span></div>
+      <div class="stat"><b>${cnt('SELESAI') + cnt('DINILAI')}</b><span>Selesai</span></div>
+      <div class="stat ${cnt('DIHENTIKAN') ? 'alert' : ''}"><b>${cnt('DIHENTIKAN')}</b><span>Dihentikan</span></div>
+    </div>
+    <div class="row sp gap" style="margin-bottom:12px">
+      <div class="filters" style="margin:0"><input class="in" id="mo-q" placeholder="Cari nama / NISN / kelas" value="${esc(box.dataset.q || '')}">
+        <select class="in" id="mo-f"><option value="">Semua status</option>${['BELUM', 'MENGERJAKAN', 'TERKUNCI', 'SELESAI', 'DIHENTIKAN', 'DINILAI'].map(s => `<option ${s === filt ? 'selected' : ''}>${s}</option>`).join('')}</select></div>
+      <div class="row gap"><span>Token <span class="token">${esc(d.exam.access_code)}</span></span><button class="btn gold sm" id="mo-bc">Pesan ke semua siswa</button></div>
+    </div>
+    <div class="mon">
+      <div class="tbl-wrap"><table class="t"><thead><tr><th>Siswa</th><th>Status</th><th>Progres</th><th>Sisa</th><th>Pelanggaran</th><th class="num">Nilai</th><th></th></tr></thead><tbody>
+      ${list.map(r => {
+        const [a, b] = String(r.progress || '0/0').split('/').map(Number);
+        return `<tr><td><span class="dotl ${r.online ? 'on' : ''}" title="${r.online ? 'Online' : 'Tidak aktif ' + (r.last_seen || '')}"></span><b>${esc(r.nama)}</b><br><span class="muted small">${esc(r.nisn)} · ${esc(r.kelas)}</span></td>
+          <td>${stPill(r.status)}</td><td><div class="bar"><i style="width:${b ? Math.round(a / b * 100) : 0}%"></i></div><span class="small muted">${esc(r.progress || '')}</span></td>
+          <td class="num">${r.sisa != null ? fmtClock(r.sisa) : (r.selesai || '')}</td>
+          <td>${r.sid ? `<div class="vchips"><span class="${r.batas_viol && r.vtotal >= r.batas_viol ? 'h' : ''}"><b>${r.vtotal}</b>${r.batas_viol ? '/' + r.batas_viol : ''}</span>${vc(r.v.tab, 'Tab')}${vc(r.v.multi, 'Multitask')}${vc(r.v.fs, 'Fullscreen')}${vc(r.v.copy, 'Copy')}${vc(r.v.dev, 'DevTools')}${vc(r.v.lain, 'Lain')}</div>` : ''}</td>
+          <td class="num">${r.nilai != null ? r.nilai : ''}</td>
+          <td>${r.sid ? `<button class="btn sm ${r.status === 'TERKUNCI' ? 'warn' : 'ghost'}" data-act="${esc(r.sid)}">Aksi</button>` : ''}</td></tr>`;
+      }).join('') || '<tr><td colspan="7" class="empty">Tidak ada data.</td></tr>'}
+      </tbody></table></div>
+      <div class="card feed"><h3>Catatan pelanggaran terbaru</h3>
+        ${d.viol.map(v => `<div><b>${esc(v.nama)}</b>${esc(v.waktu)} · ${esc(v.jenis)}${v.tindakan !== 'Peringatan' ? ` · <span style="color:var(--merah)">${esc(v.tindakan)}</span>` : ''}<br><span class="muted">${esc(v.detail)}</span></div>`).join('') || '<p class="muted">Belum ada pelanggaran.</p>'}
+      </div>
+    </div>`;
+  const qIn = $('#mo-q', box);
+  qIn.oninput = () => { box.dataset.q = qIn.value; drawMonitor(examId, box, d); const n = $('#mo-q', box); n.focus(); n.setSelectionRange(n.value.length, n.value.length); };
+  $('#mo-f', box).onchange = ev => { box.dataset.f = ev.target.value; drawMonitor(examId, box, d); };
+  $('#mo-bc', box).onclick = async () => {
+    const t = await promptBox('Pesan ke semua siswa', 'Pesan tampil di layar siswa yang sedang mengerjakan', '', 'area');
+    if (!t) return;
+    const r = await run('broadcastMessage', examId, t); toast('Terkirim ke ' + r.n + ' siswa.', 'ok');
+  };
+  $$('[data-act]', box).forEach(b => b.onclick = () => proctorMenu(rows.find(r => r.sid === b.dataset.act), examId));
+}
+
+function proctorMenu(r, examId) {
+  const guru = A.user.role !== 'Pengawas';
+  const aktif = r.status === 'MENGERJAKAN' || r.status === 'TERKUNCI';
+  const acts = [
+    r.status === 'TERKUNCI' && ['BUKA_KUNCI', 'Buka kunci layar', 'pri'],
+    aktif && ['TAMBAH_WAKTU', 'Tambah waktu', 'ghost'],
+    aktif && ['PESAN', 'Kirim pesan ke siswa ini', 'ghost'],
+    ['RESET_PERANGKAT', 'Reset perangkat (pindah komputer)', 'ghost'],
+    aktif && ['HENTIKAN', 'Hentikan ujian siswa ini', 'warn'],
+    !aktif && guru && ['BUKA_ULANG', 'Buka ulang sesi', 'ghost'],
+    guru && ['HAPUS_SESI', 'Hapus sesi (siswa mengulang dari awal)', 'warn']
+  ].filter(Boolean);
+  const m = modal({
+    title: r.nama + ' · ' + r.kelas,
+    body: `<p class="muted">${esc(r.nisn)} · ${stPill(r.status)} · pelanggaran ${r.vtotal}${r.batas_viol ? ' dari batas ' + r.batas_viol : ''}</p>
+      <div style="display:grid;gap:8px">${acts.map(a => `<button class="btn ${a[2]}" data-a="${a[0]}">${a[1]}</button>`).join('')}
+      ${guru ? '<button class="btn ghost" data-a="DETAIL">Lihat jawaban &amp; riwayat pelanggaran</button>' : ''}</div>`,
+    actions: []
+  });
+  $$('[data-a]', m.box).forEach(b => b.onclick = async () => {
+    const a = b.dataset.a;
+    if (a === 'DETAIL') { m.close(); return sessionDetail(r.sid); }
+    let val = '';
+    if (a === 'BUKA_KUNCI') { val = await promptBox('Buka kunci', 'Tambahan toleransi pelanggaran', '3', 'number'); if (val === null) return; }
+    if (a === 'TAMBAH_WAKTU') { val = await promptBox('Tambah waktu', 'Tambahan menit', '10', 'number'); if (val === null) return; }
+    if (a === 'BUKA_ULANG') { val = await promptBox('Buka ulang sesi', 'Waktu yang diberikan (menit)', '15', 'number'); if (val === null) return; }
+    if (a === 'PESAN') { val = await promptBox('Pesan ke ' + r.nama, 'Isi pesan', '', 'area'); if (!val) return; }
+    if (a === 'HENTIKAN') { val = await promptBox('Hentikan ujian', 'Alasan (tercatat di log)', 'Pelanggaran tata tertib', 'text'); if (val === null) return; }
+    if (a === 'HAPUS_SESI' && !await confirmBox('Hapus sesi ' + esc(r.nama) + '? Semua jawaban dan catatan sesi ini hilang.', 'Hapus sesi', 'warn')) return;
+    try { const res = await run('proctorAction', r.sid, a, val); toast(res.msg, 'ok'); m.close(); nav('awas', examId); }
+    catch (e) { toast(errMsg(e), 'err'); }
+  });
+}
+
+/* ================= PENILAIAN ================= */
+VIEWS.nilai = async (pre) => {
+  await examPicker('Penilaian', 'Periksa jawaban, nilai uraian & speaking, dan tinjau pelanggaran.', async (id, box) => {
+    box.innerHTML = '<div class="empty">Memuat…</div>';
+    const list = await call('listSessionsForGrading', id);
+    const perlu = list.filter(x => x.perlu_koreksi).length;
+    box.innerHTML = `${perlu ? `<div class="oklist" style="margin-bottom:12px">${perlu} lembar jawaban menunggu koreksi manual.</div>` : ''}
+      ${list.length ? `<div class="tbl-wrap"><table class="t"><thead><tr><th>Siswa</th><th>Status</th><th class="num">Objektif</th><th class="num">Manual</th><th class="num">Nilai</th><th class="num">Pelanggaran</th><th></th></tr></thead><tbody>
+      ${list.map(s => `<tr><td><b>${esc(s.nama)}</b><br><span class="muted small">${esc(s.nisn)} · ${esc(s.kelas)}</span></td>
+        <td>${stPill(s.status)} ${s.perlu_koreksi ? '<span class="st KOREKSI">perlu koreksi</span>' : ''}</td>
+        <td class="num">${s.objektif === '' ? '' : s.objektif}</td><td class="num">${s.manual === '' ? '' : s.manual}</td><td class="num"><b>${s.nilai != null ? s.nilai : ''}</b></td>
+        <td class="num">${s.vtotal}</td><td><button class="btn sm pri" data-sid="${esc(s.sid)}">Periksa</button></td></tr>`).join('')}
+      </tbody></table></div>` : empty('Belum ada siswa yang mengerjakan ujian ini.')}`;
+    $$('[data-sid]', box).forEach(b => b.onclick = () => sessionDetail(b.dataset.sid, () => nav('nilai', id)));
+  }, pre);
+};
+
+function fmtAns(it) {
+  const a = it.jawaban, o = it.opsi || {};
+  if (a === null || a === undefined || a === '') return '<span class="muted">— kosong —</span>';
+  switch (it.tipe) {
+    case 'PG_KOMPLEKS': return esc([].concat(a).join(', '));
+    case 'BENAR_SALAH': return (o.pernyataan || []).map((p, i) => `${i + 1}. ${esc(a[i] === 'B' ? o.label[0] : a[i] === 'S' ? o.label[1] : '—')}`).join('<br>');
+    case 'MENJODOHKAN': return (o.kiri || []).map((k, i) => `${i + 1}-${esc(a[i] || '?')}`).join(', ');
+    case 'URUTAN': return esc(Object.keys(a).sort((x, y) => a[x] - a[y]).map(k => Number(k) + 1).join(', '));
+    case 'ESAI': return `<div class="box" style="font-family:var(--serif);white-space:pre-wrap">${esc(a)}</div><span class="small muted">${String(a).trim().split(/\s+/).filter(Boolean).length} kata</span>`;
+    case 'SPEAKING': return a && a.rec ? mediaTag(a.rec, 'audio') : '<span class="muted">Tidak ada rekaman</span>';
+    default: return esc(typeof a === 'object' ? JSON.stringify(a) : a);
+  }
+}
+
+async function sessionDetail(sid, after) {
+  const d = await run('getSessionDetail', sid);
+  const i = d.info;
+  const col = { benar: 'var(--hijau)', salah: 'var(--merah)', sebagian: '#8A5A00', kosong: 'var(--muted)', koreksi: '#8A5A00', dinilai: 'var(--biru)' };
+  const m = modal({
+    title: i.nama + ' · ' + i.kelas + ' — nilai ' + d.nilai.nilai, wide: true,
+    body: `<p class="muted">${esc(i.nisn)} · ${stPill(i.status)} · mulai ${esc(i.mulai)} · selesai ${esc(i.selesai || '-')} · objektif ${d.nilai.obj} + manual ${d.nilai.man} dari ${d.nilai.max}</p>
+      ${d.viol.length ? `<details class="card"><summary><b>${d.viol.length} pelanggaran tercatat</b></summary>${d.viol.map(v => `<div class="small">${esc(v.waktu)} · ${esc(v.jenis)} — ${esc(v.detail)} <i>(${esc(v.tindakan)})</i></div>`).join('')}</details>` : '<p class="small">Tidak ada pelanggaran.</p>'}
+      <div class="tbl-wrap"><table class="t"><thead><tr><th class="num">No</th><th>Soal</th><th>Jawaban siswa</th><th>Kunci</th><th class="num">Skor</th></tr></thead><tbody>
+      ${d.items.map(it => `<tr><td class="num">${it.no}</td><td style="max-width:320px"><span class="small muted">${esc(TIPE_LABEL[it.tipe] || it.tipe)}</span><br>${rich(snip(it.teks, 220))}
+          ${it.manual && it.rubrik ? `<details><summary class="small">Rubrik</summary><div class="small">${rich(it.rubrik)}</div></details>` : ''}</td>
+        <td style="max-width:380px">${fmtAns(it)}</td><td><b>${esc(it.manual ? 'manual' : it.kunci)}</b></td>
+        <td class="num">${it.manual && d.bisa_nilai
+          ? `<input class="in" type="number" step="0.5" min="0" max="${it.maks}" data-ms="${esc(it.id)}" value="${esc(it.skor_manual)}" style="width:80px"> / ${it.maks}`
+          : `<span style="color:${col[it.st] || 'inherit'};font-weight:700">${it.skor}</span> / ${it.maks}`}</td></tr>`).join('')}
+      </tbody></table></div>
+      ${d.bisa_nilai ? `<label class="fld" style="margin-top:14px"><span>Catatan guru</span><textarea class="in" id="sd-cat" rows="2">${esc(i.catatan || '')}</textarea></label>` : ''}`,
+    actions: d.bisa_nilai ? [{ label: 'Tutup' }, {
+      label: 'Simpan nilai', cls: 'pri', onClick: async (c, box) => {
+        const scores = {};
+        let bad = false;
+        $$('[data-ms]', box).forEach(inp => {
+          const v = inp.value.trim();
+          if (v !== '' && (isNaN(v) || Number(v) < 0 || Number(v) > Number(inp.max))) bad = true;
+          scores[inp.dataset.ms] = v;
+        });
+        if (bad) { toast('Skor manual harus 0 sampai skor maksimal.', 'err'); return false; }
+        const r = await run('saveManualScores', sid, scores, $('#sd-cat', box).value);
+        toast('Nilai tersimpan: ' + r.nilai + (r.needs ? ' (masih ada yang belum dinilai)' : ''), 'ok');
+        if (after) after();
+      }
+    }] : [{ label: 'Tutup' }]
+  });
+  hydrateMedia(m.box, staffLoader); renderMath(m.box);
+}
+
+/* ================= REKAP & ANALISIS ================= */
+VIEWS.rekap = async () => {
+  await examPicker('Rekap & analisis', 'Nilai per siswa, unduhan, dan tingkat kesukaran butir soal.', async (id, box) => {
+    box.innerHTML = '<div class="empty">Memuat…</div>';
+    const r = await call('getRekap', id);
+    const g = r.ringkas;
+    box.innerHTML = `<div class="stats"><div class="stat"><b>${g.peserta}</b><span>Sudah dinilai</span></div><div class="stat"><b>${g.rata}</b><span>Rata-rata</span></div>
+        <div class="stat"><b>${g.tertinggi}</b><span>Tertinggi</span></div><div class="stat"><b>${g.terendah}</b><span>Terendah</span></div></div>
+      <div class="row gap" style="margin-bottom:12px"><button class="btn ghost" id="rk-csv">Unduh CSV</button>
+        ${A.user.role !== 'Pengawas' ? '<button class="btn ghost" id="rk-sheet">Buat sheet rekap</button>' : ''}<button class="btn dark" id="rk-an">Analisis butir soal</button></div>
+      <div class="tbl-wrap"><table class="t"><thead><tr><th class="num">No</th><th>NISN</th><th>Nama</th><th>Kelas</th><th>Status</th><th>Mulai</th><th>Selesai</th><th>Terjawab</th><th class="num">Pelanggaran</th><th class="num">Nilai</th></tr></thead><tbody>
+      ${r.rows.map((x, i) => `<tr><td class="num">${i + 1}</td><td>${esc(x.nisn)}</td><td>${esc(x.nama)}</td><td>${esc(x.kelas)}</td><td>${stPill(x.status)}</td><td>${esc(x.mulai)}</td><td>${esc(x.selesai)}</td><td>${esc(x.progress)}</td><td class="num">${x.pelanggaran}</td><td class="num"><b>${x.nilai}</b></td></tr>`).join('')}
+      </tbody></table></div><div id="rk-an-box"></div>`;
+    $('#rk-csv', box).onclick = () => {
+      const cols = ['No', 'NISN', 'Nama', 'Kelas', 'Status', 'Mulai', 'Selesai', 'Terjawab', 'Pelanggaran', 'Nilai'];
+      const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+      const lines = [cols.join(';')].concat(r.rows.map((x, i) => [i + 1, '=' + q(x.nisn), q(x.nama), q(x.kelas), x.status, x.mulai, x.selesai, x.progress, x.pelanggaran, String(x.nilai).replace('.', ',')].join(';')));
+      downloadText('Rekap_' + r.exam.judul.replace(/[^\w]+/g, '_') + '.csv', lines.join('\r\n'));
+    };
+    if ($('#rk-sheet', box)) $('#rk-sheet', box).onclick = async () => {
+      const x = await run('exportRekap', id);
+      modal({ title: 'Sheet rekap dibuat', body: `<p>Rekap tersimpan sebagai sheet baru di spreadsheet database.</p><p><a href="${esc(x.url)}" target="_blank" rel="noopener">Buka sheet rekap</a></p>` });
+    };
+    $('#rk-an', box).onclick = async () => {
+      const a = await run('getAnalisis', id);
+      $('#rk-an-box', box).innerHTML = `<div class="card" style="margin-top:18px"><h3>Analisis butir soal · ${a.peserta} lembar jawaban</h3>
+        <p class="small muted">Indeks kesukaran p = rata-rata proporsi skor. p &gt; 0,70 mudah · 0,30–0,70 sedang · &lt; 0,30 sukar. Distribusi jawaban membantu menilai kualitas pengecoh.</p>
+        <div class="tbl-wrap"><table class="t"><thead><tr><th class="num">No</th><th>Section</th><th>Tipe</th><th>Soal</th><th>Kunci</th><th class="num">p</th><th>Kategori</th><th class="num">Kosong</th><th>Sebaran jawaban</th></tr></thead><tbody>
+        ${a.items.map(x => `<tr><td class="num">${x.no}</td><td class="small">${esc(x.section)}</td><td class="small">${esc(x.tipe)}</td><td class="small">${esc(x.teks)}</td><td><b>${esc(x.kunci)}</b></td>
+          <td class="num">${x.p == null ? '–' : x.p}</td><td><span class="st ${x.kategori === 'Sukar' ? 'TERKUNCI' : x.kategori === 'Mudah' ? 'AKTIF' : ''}">${esc(x.kategori)}</span></td><td class="num">${x.kosong}</td>
+          <td class="small">${Object.keys(x.dist).sort().map(k => `${esc(k)}: ${x.dist[k]}`).join(' · ')}</td></tr>`).join('')}
+        </tbody></table></div></div>`;
+    };
+  });
+};
+
+/* ================= SISWA ================= */
+VIEWS.siswa = async () => {
+  const list = await call('listStudents');
+  const kelas = [...new Set(list.map(s => s.kelas))].sort();
+  A.classes = kelas;
+  M.innerHTML = `<div class="ph"><div><h1>Data siswa</h1><p>${list.length} siswa terdaftar. Siswa masuk ujian memakai NISN.</p></div>
+    <div class="row gap"><button class="btn ghost" id="sw-imp">Tempel dari Excel</button><button class="btn pri" id="sw-new">Tambah siswa</button></div></div>
+    <div class="filters"><input class="in" id="sw-q" placeholder="Cari nama / NISN"><select class="in" id="sw-k"><option value="">Semua kelas</option>${kelas.map(k => `<option>${esc(k)}</option>`).join('')}</select></div>
+    <div id="sw-list"></div>`;
+  const draw = () => {
+    const q = $('#sw-q').value.toLowerCase(), k = $('#sw-k').value;
+    const f = list.filter(s => (!k || s.kelas === k) && (!q || (s.nama_siswa + s.nisn).toLowerCase().includes(q)));
+    $('#sw-list').innerHTML = f.length ? `<div class="tbl-wrap"><table class="t"><thead><tr><th>NISN</th><th>Nama</th><th>Kelas</th><th>L/P</th><th>Status</th><th></th></tr></thead><tbody>
+      ${f.slice(0, 500).map(s => `<tr><td>${esc(s.nisn)}</td><td>${esc(s.nama_siswa)}</td><td>${esc(s.kelas)}</td><td>${esc(s.jenis_kelamin)}</td><td>${stPill(s.status)}</td>
+        <td style="white-space:nowrap"><button class="btn sm ghost" data-e="${esc(s.nisn)}">Ubah</button> <button class="btn sm ghost" data-d="${esc(s.nisn)}">Hapus</button></td></tr>`).join('')}
+      </tbody></table></div>${f.length > 500 ? '<p class="small muted">Menampilkan 500 pertama. Gunakan pencarian.</p>' : ''}` : empty('Belum ada data siswa.', '<button class="btn pri" onclick="studentImport()">Tempel dari Excel</button>');
+    $$('[data-e]').forEach(b => b.onclick = () => studentForm(list.find(s => s.nisn === b.dataset.e)));
+    $$('[data-d]').forEach(b => b.onclick = async () => {
+      if (!await confirmBox('Hapus siswa NISN ' + esc(b.dataset.d) + '?', 'Hapus', 'warn')) return;
+      await run('deleteStudent', b.dataset.d); toast('Siswa dihapus.', 'ok'); nav('siswa');
+    });
+  };
+  $('#sw-q').oninput = draw; $('#sw-k').onchange = draw;
+  $('#sw-new').onclick = () => studentForm(null);
+  $('#sw-imp').onclick = studentImport;
+  draw();
+};
+
+function studentForm(s) {
+  const d = s || { status: 'AKTIF' };
+  modal({
+    title: s ? 'Ubah siswa' : 'Tambah siswa',
+    body: `<div class="grid2"><label class="fld"><span>NISN</span><input class="in" id="sf-nisn" inputmode="numeric" value="${esc(d.nisn || '')}"></label>
+      <label class="fld"><span>Nama lengkap</span><input class="in" id="sf-nama" value="${esc(d.nama_siswa || '')}"></label>
+      <label class="fld"><span>Kelas</span><input class="in upper" id="sf-kelas" list="sf-kl" value="${esc(d.kelas || '')}" placeholder="mis. XI IPA 1"><datalist id="sf-kl">${A.classes.map(c => `<option>${esc(c)}</option>`).join('')}</datalist></label>
+      <label class="fld"><span>Jenis kelamin</span><select class="in" id="sf-jk"><option value="">-</option><option ${d.jenis_kelamin === 'L' ? 'selected' : ''}>L</option><option ${d.jenis_kelamin === 'P' ? 'selected' : ''}>P</option></select></label>
+      <label class="fld"><span>Status</span><select class="in" id="sf-st"><option ${d.status !== 'NONAKTIF' ? 'selected' : ''}>AKTIF</option><option ${d.status === 'NONAKTIF' ? 'selected' : ''}>NONAKTIF</option></select></label></div>`,
+    actions: [{ label: 'Batal' }, {
+      label: 'Simpan siswa', cls: 'pri', onClick: async () => {
+        await run('saveStudent', { nisn: $('#sf-nisn').value, nama_siswa: $('#sf-nama').value, kelas: $('#sf-kelas').value, jenis_kelamin: $('#sf-jk').value, status: $('#sf-st').value }, s ? s.nisn : '');
+        toast('Data siswa tersimpan.', 'ok'); nav('siswa');
+      }
+    }]
+  });
+}
+
+function studentImport() {
+  modal({
+    title: 'Tempel data siswa dari Excel', wide: true,
+    body: `<p>Salin kolom <b>NISN, Nama, Kelas, L/P</b> dari Excel atau Google Sheets, lalu tempel di bawah. NISN yang sudah ada akan diperbarui.</p>
+      <textarea class="in" id="si-t" rows="12" placeholder="0081234567&#9;Ahmad Fauzan&#9;XI IPA 1&#9;L"></textarea><div id="si-r"></div>`,
+    actions: [{ label: 'Tutup' }, {
+      label: 'Import siswa', cls: 'pri', onClick: async (c, box) => {
+        const r = await run('importStudents', $('#si-t', box).value);
+        $('#si-r', box).innerHTML = `<div class="oklist" style="margin-top:10px">${r.added} ditambahkan, ${r.updated} diperbarui.</div>${r.errors.length ? `<div class="errs">${r.errors.map(esc).join('<br>')}</div>` : ''}`;
+        toast('Import selesai.', 'ok');
+        if (!r.errors.length) nav('siswa');
+        return !!(!r.errors.length) || false;
+      }
+    }]
+  });
+}
+
+/* ================= PENGGUNA ================= */
+VIEWS.pengguna = async () => {
+  const list = await call('listUsers');
+  M.innerHTML = `<div class="ph"><div><h1>Akun guru &amp; admin</h1><p>Admin: akses penuh. Guru: ujian miliknya. Pengawas: memantau dan mengawasi saja.</p></div><button class="btn pri" id="us-new">Tambah akun</button></div>
+    <div class="tbl-wrap"><table class="t"><thead><tr><th>Nama</th><th>Username</th><th>Peran</th><th>Mapel</th><th>Status</th><th>Login terakhir</th><th></th></tr></thead><tbody>
+    ${list.map(u => `<tr><td>${esc(u.nama_lengkap)}</td><td>${esc(u.username)}</td><td>${esc(u.role)}</td><td>${esc(u.mapel_diampu)}</td><td>${stPill(u.status)}</td><td>${esc(u.last_login)}</td>
+      <td style="white-space:nowrap"><button class="btn sm ghost" data-e="${esc(u.user_id)}">Ubah</button> <button class="btn sm ghost" data-d="${esc(u.user_id)}">Hapus</button></td></tr>`).join('')}</tbody></table></div>`;
+  const form = u => {
+    const d = u || { role: 'Guru', status: 'AKTIF' };
+    modal({
+      title: u ? 'Ubah akun' : 'Tambah akun',
+      body: `<div class="grid2"><label class="fld"><span>Nama lengkap</span><input class="in" id="uf-n" value="${esc(d.nama_lengkap || '')}"></label>
+        <label class="fld"><span>Username</span><input class="in" id="uf-u" value="${esc(d.username || '')}"></label>
+        <label class="fld"><span>Peran</span><select class="in" id="uf-r">${['Guru', 'Pengawas', 'Admin'].map(r => `<option ${r === d.role ? 'selected' : ''}>${r}</option>`).join('')}</select></label>
+        <label class="fld"><span>Mapel diampu</span><input class="in" id="uf-m" value="${esc(d.mapel_diampu || '')}"></label>
+        <label class="fld"><span>${u ? 'Password baru (kosongkan jika tidak diganti)' : 'Password awal (min. 8 karakter)'}</span><input class="in" id="uf-p" type="text" autocomplete="off"></label>
+        <label class="fld"><span>Status</span><select class="in" id="uf-s"><option ${d.status !== 'NONAKTIF' ? 'selected' : ''}>AKTIF</option><option ${d.status === 'NONAKTIF' ? 'selected' : ''}>NONAKTIF</option></select></label></div>
+        <p class="small muted">Pengguna wajib mengganti password saat login pertama.</p>`,
+      actions: [{ label: 'Batal' }, {
+        label: 'Simpan akun', cls: 'pri', onClick: async () => {
+          await run('saveUser', { user_id: u ? u.user_id : '', nama_lengkap: $('#uf-n').value, username: $('#uf-u').value, role: $('#uf-r').value, mapel_diampu: $('#uf-m').value, password: $('#uf-p').value, status: $('#uf-s').value });
+          toast('Akun tersimpan.', 'ok'); nav('pengguna');
+        }
+      }]
+    });
+  };
+  $('#us-new').onclick = () => form(null);
+  $$('[data-e]', M).forEach(b => b.onclick = () => form(list.find(u => u.user_id === b.dataset.e)));
+  $$('[data-d]', M).forEach(b => b.onclick = async () => {
+    if (!await confirmBox('Hapus akun ini?', 'Hapus', 'warn')) return;
+    try { await run('deleteUser', b.dataset.d); nav('pengguna'); } catch (e) { toast(errMsg(e), 'err'); }
+  });
+};
+
+/* ================= LOG & AKUN ================= */
+VIEWS.audit = async () => {
+  const list = await call('getAuditLog');
+  M.innerHTML = `<div class="ph"><div><h1>Log aktivitas</h1><p>300 aktivitas terakhir: login, perubahan soal, tindakan pengawas, penilaian.</p></div></div>
+    <div class="tbl-wrap"><table class="t"><thead><tr><th>Waktu</th><th>Pengguna</th><th>Aksi</th><th>Objek</th><th>Detail</th></tr></thead><tbody>
+    ${list.map(l => `<tr><td style="white-space:nowrap">${esc(l.waktu)}</td><td>${esc(l.nama)}</td><td>${esc(l.aksi)}</td><td class="small">${esc(l.objek)}</td><td class="small">${esc(snip(l.detail, 120))}</td></tr>`).join('')}</tbody></table></div>`;
+};
+
+VIEWS.akun = () => {
+  M.innerHTML = `${A.user.wajib_ganti ? '<div class="warnbox">Ganti password awal sebelum memakai sistem.</div>' : ''}
+    <div class="ph"><div><h1>Akun saya</h1><p>${esc(A.user.nama)} · ${esc(A.user.username)} · ${esc(A.user.role)}</p></div></div>
+    <div class="card" style="max-width:440px"><h3>Ganti password</h3>
+      <label class="fld"><span>Password lama</span><input class="in" type="password" id="pw-o" autocomplete="current-password"></label>
+      <label class="fld"><span>Password baru (min. 8 karakter)</span><input class="in" type="password" id="pw-n" autocomplete="new-password"></label>
+      <label class="fld"><span>Ulangi password baru</span><input class="in" type="password" id="pw-n2" autocomplete="new-password"></label>
+      <button class="btn pri" id="pw-go">Ganti password</button></div>`;
+  $('#pw-go').onclick = async () => {
+    if ($('#pw-n').value !== $('#pw-n2').value) return toast('Ulangan password baru tidak sama.', 'err');
+    try { await run('changePassword', $('#pw-o').value, $('#pw-n').value); A.user.wajib_ganti = false; toast('Password diganti.', 'ok'); nav('beranda'); }
+    catch (e) { toast(errMsg(e), 'err'); }
+  };
+};
+</script>
+</body>
+</html>
